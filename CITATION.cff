@@ -6,9 +6,10 @@ authors:
     given-names: Dacomb
     orcid: "https://orcid.org/0009-0007-7507-1398"
 title: "twinconj: local constants of twin-prime propagation"
-version: v1.0
+version: v1.1
 date-released: 2026-09-12
-url: "https://github.com/dacomb-bierton/Local-Constants-Twin-Prime-Propogation"
+doi: 10.5281/zenodo.22720947
+url: "https://doi.org/10.5281/zenodo.22720947"
 license: CC-BY-4.0
 keywords:
   - twin primes
