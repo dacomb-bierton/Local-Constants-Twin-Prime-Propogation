@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TeslaCam Editor</title>
+<link rel="stylesheet" href="/static/styles.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23e82127'/%3E%3Cpath d='M8 10h16v4h-6v10h-4V14H8z' fill='white'/%3E%3C/svg%3E">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand"><span class="logo">T</span><span>TeslaCam <b>Editor</b></span></div>
+  <div class="folder-box">
+    <input id="root-input" type="text" placeholder="Path to TeslaCam folder or USB drive (e.g. E:\TeslaCam)" spellcheck="false">
+    <button id="browse-btn" class="btn" title="Browse for a folder">Browse…</button>
+    <button id="open-btn" class="btn primary">Open</button>
+    <select id="detected-roots" class="select" title="Detected TeslaCam drives"><option value="">Detected drives…</option></select>
+  </div>
+  <div class="project-box">
+    <input id="project-name" type="text" value="Untitled" title="Project name" spellcheck="false">
+    <button id="save-project" class="btn" title="Save project">Save</button>
+    <select id="load-project" class="select" title="Load a saved project"><option value="">Load…</option></select>
+    <button id="help-btn" class="btn ghost" title="Keyboard shortcuts">?</button>
+  </div>
+</header>
+
+<main id="workspace">
+  <aside id="library">
+    <div class="panel-head">
+      <div class="seg-tabs" id="kind-filter">
+        <button data-kind="all" class="active">All</button>
+        <button data-kind="SavedClips">Saved</button>
+        <button data-kind="SentryClips">Sentry</button>
+        <button data-kind="RecentClips">Recent</button>
+      </div>
+      <input id="library-search" type="search" placeholder="Filter by date, city, reason…">
+    </div>
+    <div id="library-summary" class="muted small">No folder opened</div>
+    <div id="event-list" class="event-list"></div>
+  </aside>
+
+  <section id="center">
+    <div id="stage-wrap">
+      <div id="stage" class="stage" data-empty="1">
+        <div id="stage-empty" class="stage-empty">
+          <div class="big">Open your TeslaCam folder to get started</div>
+          <div class="muted">Plug in the USB drive (or copy the <code>TeslaCam</code> folder to your PC), enter its path above and press <b>Open</b>.</div>
+        </div>
+        <div id="tiles"></div>
+        <div id="stage-overlays"></div>
+        <div id="blur-layer"></div>
+        <div id="stage-toast" class="stage-toast"></div>
+      </div>
+    </div>
+
+    <div id="transport">
+      <div class="transport-row">
+        <button id="btn-prev-seg" class="icon" title="Previous segment ( [ )">&#9198;</button>
+        <button id="btn-back" class="icon" title="Back 5 s (Shift+←)">&#9194;</button>
+        <button id="btn-play" class="icon big" title="Play / pause (Space)">&#9654;</button>
+        <button id="btn-fwd" class="icon" title="Forward 5 s (Shift+→)">&#9193;</button>
+        <button id="btn-next-seg" class="icon" title="Next segment ( ] )">&#9197;</button>
+        <span id="time-display" class="time mono">0:00.0 / 0:00.0</span>
+        <span id="clock-display" class="clock mono muted"></span>
+        <span class="spacer"></span>
+        <label class="inline">Speed
+          <select id="speed-select" class="select small">
+            <option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option>
+            <option value="1.5">1.5×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option>
+          </select>
+        </label>
+        <button id="btn-cycle" class="btn small" title="Cycle main camera (C)">Cycle cam</button>
+        <label class="inline chk" title="Automatically rotate the main camera while playing"><input type="checkbox" id="auto-cycle"> Auto</label>
+        <input id="cycle-interval" type="number" class="num small" min="0.5" step="0.5" value="5" title="Seconds per camera"> s
+        <label class="inline chk" title="Mirror rear-facing cameras (M)"><input type="checkbox" id="mirror-toggle"> Mirror</label>
+        <button id="btn-still" class="btn small" title="Save the current frame as an image">Snapshot</button>
+        <button id="btn-fullscreen" class="icon" title="Fullscreen (F)">&#x26F6;</button>
+      </div>
+      <div id="timeline" class="timeline">
+        <div class="tl-track">
+          <div id="tl-range" class="tl-range"></div>
+          <div id="tl-progress" class="tl-progress"></div>
+          <div id="tl-segments"></div>
+          <div id="tl-trigger" class="tl-trigger" title="Event trigger" hidden></div>
+          <div id="tl-in" class="tl-mark in" title="In point" hidden></div>
+          <div id="tl-out" class="tl-mark out" title="Out point" hidden></div>
+          <div id="tl-head" class="tl-head"></div>
+        </div>
+        <div class="tl-buttons">
+          <button id="btn-set-in" class="btn small" title="Set in point (I)">Set In</button>
+          <button id="btn-set-out" class="btn small" title="Set out point (O)">Set Out</button>
+          <button id="btn-clear-inout" class="btn small ghost" title="Clear in/out">Clear</button>
+          <span id="inout-display" class="muted small mono"></span>
+          <span class="spacer"></span>
+          <button id="btn-add-clip" class="btn primary small" title="Add the in/out range with the current camera view to the sequence (Enter)">+ Add to sequence</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="sequence-panel">
+      <div class="panel-head row">
+        <b>Sequence</b>
+        <span id="sequence-total" class="muted small mono">0 clips · 0:00</span>
+        <span class="spacer"></span>
+        <button id="btn-play-seq" class="btn small" title="Preview the whole sequence with music">&#9654; Preview sequence</button>
+        <button id="btn-clear-seq" class="btn small ghost">Clear</button>
+        <button id="btn-export-top" class="btn primary small">Export…</button>
+      </div>
+      <div id="sequence" class="sequence"><div class="muted small pad">No clips yet. Set In/Out on the timeline and press <b>Add to sequence</b>. Clips from different events (and days) can be combined.</div></div>
+    </div>
+  </section>
+
+  <aside id="inspector">
+    <div class="seg-tabs" id="inspector-tabs">
+      <button data-tab="view" class="active">View</button>
+      <button data-tab="clip">Clip</button>
+      <button data-tab="music">Music</button>
+      <button data-tab="export">Export</button>
+      <button data-tab="info">Info</button>
+    </div>
+
+    <div class="tab active" data-tab="view">
+      <h3>Cameras</h3>
+      <div id="camera-checks" class="camera-checks"></div>
+      <div class="row gap">
+        <button id="cams-all" class="btn small ghost">All</button>
+        <button id="cams-none" class="btn small ghost">Front only</button>
+      </div>
+      <h3>Layout</h3>
+      <div id="layout-buttons" class="layout-buttons"></div>
+      <label class="field">Main camera <select id="main-camera" class="select"></select></label>
+      <label class="field">Fit
+        <select id="fit-select" class="select"><option value="cover">Fill tile (crop)</option><option value="contain">Fit inside (letterbox)</option></select>
+      </label>
+      <h3>Canvas aspect</h3>
+      <div id="aspect-buttons" class="aspect-buttons"></div>
+      <div class="muted small">The preview matches the export canvas exactly. Cycling, mirror and speed from the toolbar are part of the view too.</div>
+      <h3>Overlays</h3>
+      <label class="chk"><input type="checkbox" id="ov-timestamp" checked> Timestamp</label>
+      <label class="chk"><input type="checkbox" id="ov-labels"> Camera labels</label>
+      <label class="chk"><input type="checkbox" id="ov-location"> Location &amp; event reason</label>
+    </div>
+
+    <div class="tab" data-tab="clip">
+      <div id="clip-none" class="muted small">Select a clip in the sequence to edit it, or add one from the timeline.</div>
+      <div id="clip-editor" hidden>
+        <h3 id="clip-title">Clip</h3>
+        <div class="row gap">
+          <label class="field half">In (s) <input id="clip-in" type="number" class="num" step="0.1" min="0"></label>
+          <label class="field half">Out (s) <input id="clip-out" type="number" class="num" step="0.1" min="0"></label>
+        </div>
+        <label class="field">Speed
+          <select id="clip-speed" class="select">
+            <option value="0.25">0.25× (slow motion)</option><option value="0.5">0.5×</option><option value="1">1×</option>
+            <option value="1.5">1.5×</option><option value="2">2×</option><option value="4">4×</option><option value="8">8× (time-lapse)</option><option value="16">16×</option>
+          </select>
+        </label>
+        <div class="muted small" id="clip-duration"></div>
+        <h3>Blur / privacy</h3>
+        <div class="row gap">
+          <button id="btn-add-blur" class="btn small">Draw blur region</button>
+          <button id="btn-clear-blur" class="btn small ghost">Clear</button>
+        </div>
+        <div class="muted small">Drag a rectangle on the preview to blur licence plates or faces. Regions are fixed on the canvas.</div>
+        <h3>Actions</h3>
+        <div class="row gap wrap">
+          <button id="clip-duplicate" class="btn small">Duplicate</button>
+          <button id="clip-split" class="btn small" title="Split at the playhead">Split at playhead</button>
+          <button id="clip-remove" class="btn small danger">Remove</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab" data-tab="music">
+      <h3>Music track</h3>
+      <div class="row gap">
+        <label class="btn small file-btn">Choose file… <input id="music-file" type="file" accept="audio/*,.mp3,.m4a,.aac,.wav,.flac,.ogg" hidden></label>
+        <button id="music-path-btn" class="btn small ghost" title="Use a file path on this PC">Use path…</button>
+        <button id="music-remove" class="btn small ghost">Remove</button>
+      </div>
+      <div id="music-info" class="muted small">No music. The export is silent unless you add a track (TeslaCam clips have no audio).</div>
+      <div id="music-controls" hidden>
+        <label class="field">Start in song (s) <input id="music-offset" type="number" class="num" min="0" step="0.5" value="0"></label>
+        <label class="field">Start in video (s) <input id="music-video-offset" type="number" class="num" min="0" step="0.5" value="0"></label>
+        <label class="field">Volume <input id="music-volume" type="range" min="0" max="1.5" step="0.05" value="1"> <span id="music-volume-val" class="mono small">100%</span></label>
+        <div class="row gap">
+          <label class="field half">Fade in (s) <input id="music-fade-in" type="number" class="num" min="0" step="0.5" value="1"></label>
+          <label class="field half">Fade out (s) <input id="music-fade-out" type="number" class="num" min="0" step="0.5" value="2"></label>
+        </div>
+        <label class="chk"><input type="checkbox" id="music-loop" checked> Loop if shorter than the video</label>
+        <label class="chk"><input type="checkbox" id="music-preview" checked> Play music during sequence preview</label>
+      </div>
+    </div>
+
+    <div class="tab" data-tab="export">
+      <h3>Output</h3>
+      <label class="field">Aspect ratio <select id="export-aspect" class="select"></select></label>
+      <label class="field">Resolution
+        <select id="export-resolution" class="select">
+          <option value="480">480 (small)</option><option value="720">720p</option><option value="1080" selected>1080p</option><option value="1440">1440p</option><option value="2160">4K (2160)</option>
+        </select>
+      </label>
+      <div id="export-size" class="muted small mono"></div>
+      <div class="row gap">
+        <label class="field half">Frame rate <select id="export-fps" class="select"><option value="24">24</option><option value="30" selected>30</option><option value="36">36</option><option value="60">60</option></select></label>
+        <label class="field half">Quality <select id="export-quality" class="select"><option value="draft">Draft (fast)</option><option value="standard" selected>Standard</option><option value="high">High</option></select></label>
+      </div>
+      <div class="row gap">
+        <label class="field half">Format <select id="export-format" class="select"><option value="mp4">MP4 (H.264)</option><option value="gif">GIF</option></select></label>
+        <label class="field half">Encoder <select id="export-encoder" class="select"><option value="auto">Auto (GPU if available)</option></select></label>
+      </div>
+      <label class="field">Background colour <input id="export-bg" type="color" value="#000000"></label>
+      <h3>Watermark / logo</h3>
+      <div class="row gap">
+        <label class="btn small file-btn">Choose image… <input id="watermark-file" type="file" accept="image/*" hidden></label>
+        <button id="watermark-remove" class="btn small ghost">Remove</button>
+      </div>
+      <div id="watermark-info" class="muted small">None</div>
+      <div class="row gap">
+        <label class="field half">Position <select id="watermark-pos" class="select"><option value="br">Bottom right</option><option value="bl">Bottom left</option><option value="tr">Top right</option><option value="tl">Top left</option></select></label>
+        <label class="field half">Size <input id="watermark-scale" type="range" min="0.05" max="0.5" step="0.01" value="0.15"></label>
+      </div>
+      <label class="field">Opacity <input id="watermark-opacity" type="range" min="0.1" max="1" step="0.05" value="0.7"></label>
+      <h3>Destination</h3>
+      <label class="field">Folder <input id="export-dir" type="text" spellcheck="false"></label>
+      <label class="field">File name (optional) <input id="export-name" type="text" placeholder="auto" spellcheck="false"></label>
+      <button id="btn-export" class="btn primary full">Export sequence</button>
+      <div id="export-status" class="export-status" hidden>
+        <div class="progress"><div id="export-bar"></div></div>
+        <div class="row"><span id="export-msg" class="small"></span><span class="spacer"></span><button id="export-cancel" class="btn small ghost">Cancel</button></div>
+      </div>
+      <div id="export-result" hidden>
+        <div class="small">Saved to <span id="export-path" class="mono"></span></div>
+        <div class="row gap"><button id="export-reveal" class="btn small">Show in folder</button><button id="export-preview-btn" class="btn small ghost">Preview</button></div>
+        <video id="export-preview" controls hidden playsinline></video>
+      </div>
+      <div id="export-error" class="error small" hidden></div>
+    </div>
+
+    <div class="tab" data-tab="info">
+      <div id="event-info" class="muted small">Select an event.</div>
+      <div id="map" class="map" hidden></div>
+      <div class="row gap wrap" id="event-actions" hidden>
+        <button id="btn-reveal-event" class="btn small">Show files</button>
+        <button id="btn-delete-event" class="btn small danger">Delete from drive…</button>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<div id="modal-browse" class="modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><b>Choose TeslaCam folder</b><button class="icon modal-close">&times;</button></div>
+    <div class="row gap"><button id="browse-up" class="btn small">&#8679; Up</button><span id="browse-path" class="mono small ellipsis"></span></div>
+    <div id="browse-list" class="browse-list"></div>
+    <div class="row gap end"><span id="browse-hint" class="muted small"></span><span class="spacer"></span><button id="browse-use" class="btn primary">Use this folder</button></div>
+  </div>
+</div>
+
+<div id="modal-confirm" class="modal" hidden>
+  <div class="modal-card small">
+    <div class="modal-head"><b id="confirm-title">Confirm</b><button class="icon modal-close">&times;</button></div>
+    <div id="confirm-text" class="small"></div>
+    <div class="row gap end"><button class="btn modal-close">Cancel</button><button id="confirm-ok" class="btn danger">Delete</button></div>
+  </div>
+</div>
+
+<div id="modal-prompt" class="modal" hidden>
+  <div class="modal-card small">
+    <div class="modal-head"><b id="prompt-title">Enter value</b><button class="icon modal-close">&times;</button></div>
+    <input id="prompt-input" type="text" spellcheck="false">
+    <div class="row gap end"><button class="btn modal-close">Cancel</button><button id="prompt-ok" class="btn primary">OK</button></div>
+  </div>
+</div>
+
+<div id="modal-help" class="modal" hidden>
+  <div class="modal-card">
+    <div class="modal-head"><b>Keyboard shortcuts</b><button class="icon modal-close">&times;</button></div>
+    <table class="shortcuts">
+      <tr><td><kbd>Space</kbd> / <kbd>K</kbd></td><td>Play / pause</td><td><kbd>J</kbd> / <kbd>L</kbd></td><td>Back / forward 10 s</td></tr>
+      <tr><td><kbd>←</kbd> / <kbd>→</kbd></td><td>Back / forward 1 s (Shift: 5 s)</td><td><kbd>,</kbd> / <kbd>.</kbd></td><td>Step one frame</td></tr>
+      <tr><td><kbd>[</kbd> / <kbd>]</kbd></td><td>Previous / next segment</td><td><kbd>Home</kbd> / <kbd>End</kbd></td><td>Start / end</td></tr>
+      <tr><td><kbd>I</kbd> / <kbd>O</kbd></td><td>Set in / out point</td><td><kbd>Enter</kbd></td><td>Add to sequence</td></tr>
+      <tr><td><kbd>C</kbd></td><td>Cycle main camera</td><td><kbd>1</kbd>–<kbd>6</kbd></td><td>Main camera: front, rear, left, right, left pillar, right pillar</td></tr>
+      <tr><td><kbd>M</kbd></td><td>Mirror rear cameras</td><td><kbd>F</kbd></td><td>Fullscreen preview</td></tr>
+      <tr><td><kbd>G</kbd> / <kbd>P</kbd> / <kbd>S</kbd></td><td>Layout: grid / PiP / single</td><td><kbd>Delete</kbd></td><td>Remove selected clip</td></tr>
+    </table>
+  </div>
+</div>
+
+<audio id="music-audio" preload="auto"></audio>
+<div id="toast" class="toast" hidden></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+<script src="/static/player.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

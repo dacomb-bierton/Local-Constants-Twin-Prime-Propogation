@@ -328,7 +328,12 @@ def output_path(project: Project, events: dict[str, EventDetail]) -> Path:
         stem = _safe_filename(Path(s.filename).stem)
     else:
         first = events.get(project.items[0].event_id) if project.items else None
-        base = project.name if project.name and project.name != "Untitled" else (first.title if first else "export")
+        if project.name and project.name != "Untitled":
+            base = project.name
+        elif first is not None:
+            base = f"TeslaCam {first.kind.replace('Clips', '')} {first.start}"
+        else:
+            base = "TeslaCam export"
         stem = _safe_filename(f"{base} {s.aspect.replace(':', 'x')} {datetime.now():%Y%m%d-%H%M%S}")
     ext = ".gif" if s.format == "gif" else ".mp4"
     path = out_dir / (stem + ext)
@@ -452,7 +457,7 @@ def render_still(req: StillRequest, event: EventDetail) -> str:
     settings = ExportSettings(aspect=req.aspect, resolution=req.resolution)
     out_dir = Path(req.output_dir) if req.output_dir else default_export_dir()
     out_dir.mkdir(parents=True, exist_ok=True)
-    stem = _safe_filename(f"{event.title} +{t:.1f}s {req.aspect.replace(':', 'x')}")
+    stem = _safe_filename(f"TeslaCam {event.start} +{t:.1f}s {req.aspect.replace(':', 'x')}")
     out = out_dir / f"{stem}.jpg"
     n = 1
     while out.exists():
@@ -471,7 +476,9 @@ def frame_at(event: EventDetail, camera: str, t: float, out: Path, width: int = 
     """Quick single-camera thumbnail at event time t."""
     from .scanner import event_time_to_segment
 
+    t = max(0.0, min(t, event.duration - 0.5))
     seg, off = event_time_to_segment(event, t)
+    off = max(0.0, min(off, seg.duration - 0.5))
     path = seg.files.get(camera) or next(iter(seg.files.values()), None)
     if not path:
         return None

@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "teslacam-editor"
+version = "1.0.0"
+description = "Browse, play, edit and export Tesla dashcam / Sentry Mode footage: multi-camera layouts, camera cycling, multi-clip sequences, music, any aspect ratio."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+  "fastapi>=0.110",
+  "uvicorn[standard]>=0.29",
+  "pydantic>=2.5",
+  "python-multipart>=0.0.9",
+  "imageio-ffmpeg>=0.5",
+  "pillow>=10.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "httpx>=0.27"]
+exe = ["pyinstaller>=6"]
+
+[project.scripts]
+teslacam-editor = "teslacam_editor.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["teslacam_editor*"]
+
+[tool.setuptools.package-data]
+teslacam_editor = ["static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
