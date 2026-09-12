@@ -1,0 +1,56 @@
+{
+  "title": "twinconj: local constants of twin-prime propagation",
+  "description": "<p>Python package, proofs, and computational data for refined, quantitative versions of Dacomb Bierton's twin-prime conjectures, together with a paper draft on the local constants of the twin-prime propagation map.</p><p>The package machine-checks the finite lemmas, computes the explicit local ratio <code>R(g)</code> and the mean-value constant <code>κ = 2·C₂·R̄ = 14.76768…</code>, and reproduces the exhaustive experiments to <code>p ≤ 10<sup>10</sup></code> (propagation actual/predicted = 1.0044). The accompanying paper proves an explicit finite-product formula for <code>R(g)</code> with sharp bounds <code>2.0836 &lt; R(g) ≪ (log log g)²</code>, the mean values of the four- and six-form singular series, the Selberg upper bound <code>N(X) ≪ X/(log X)³</code>, and the identities that bi-twin chains share the singular series of prime quadruplets and <code>S₆(6) = 3·S(sextuplet)</code>.</p>",
+  "creators": [
+    {
+      "name": "Bierton, Dacomb",
+      "orcid": "0009-0007-7507-1398"
+    }
+  ],
+  "access_right": "open",
+  "license": "cc-by-4.0",
+  "upload_type": "software",
+  "publication_date": "2026-09-12",
+  "language": "eng",
+  "keywords": [
+    "twin primes",
+    "twin-prime propagation",
+    "local constants",
+    "singular series",
+    "Bateman-Horn",
+    "number theory",
+    "Dacomb Bierton"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/dacomb-bierton/Local-Constants-Twin-Prime-Propogation",
+      "relation": "isSupplementTo",
+      "resource_type": "software",
+      "scheme": "url"
+    },
+    {
+      "identifier": "10.5281/zenodo.22017371",
+      "relation": "cites",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.22058355",
+      "relation": "cites",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.22063097",
+      "relation": "cites",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "10.5281/zenodo.22206095",
+      "relation": "cites",
+      "resource_type": "publication-preprint",
+      "scheme": "doi"
+    }
+  ]
+}

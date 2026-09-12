@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - family-names: Bierton
+    given-names: Dacomb
+    orcid: "https://orcid.org/0009-0007-7507-1398"
+title: "twinconj: local constants of twin-prime propagation"
+version: v1.0
+date-released: 2026-09-12
+url: "https://github.com/dacomb-bierton/Local-Constants-Twin-Prime-Propogation"
+license: CC-BY-4.0
+keywords:
+  - twin primes
+  - twin-prime propagation
+  - local constants
+  - singular series
+  - number theory
+references:
+  - type: article
+    title: "A Twin-Prime Propagation Conjecture"
+    authors:
+      - family-names: Bierton
+        given-names: Dacomb
+    doi: 10.5281/zenodo.22017371
+    year: 2026
+  - type: article
+    title: "A Twin-Gap Existence Conjecture"
+    authors:
+      - family-names: Bierton
+        given-names: Dacomb
+    doi: 10.5281/zenodo.22058355
+    year: 2026
+  - type: article
+    title: "Structural Reduction of Two Twin-Prime Conjectures and Conditional Resolution under Hypothesis H"
+    authors:
+      - family-names: Bierton
+        given-names: Dacomb
+    doi: 10.5281/zenodo.22063097
+    year: 2026
+  - type: article
+    title: "Theorems on Twin-Prime Propagation and a Redefinition of Two Conjectures"
+    authors:
+      - family-names: Bierton
+        given-names: Dacomb
+    doi: 10.5281/zenodo.22206095
+    year: 2026

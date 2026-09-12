@@ -1,6 +1,11 @@
 # twinconj — refined twin-prime conjectures
 
+[![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
+
 Repository: [https://github.com/dacomb-bierton/Local-Constants-Twin-Prime-Propogation](https://github.com/dacomb-bierton/Local-Constants-Twin-Prime-Propogation)
+
+**Dacomb Bierton**  
+ORCID: [0009-0007-7507-1398](https://orcid.org/0009-0007-7507-1398)
 
 Sharpened versions of the three statements in Dacomb Bierton's notes on
 lower twin primes — the **Twin-Prime Propagation Conjecture**, the
@@ -171,7 +176,17 @@ The generators behind the *Twin-Gap Existence* note (`final.py`, `main.py`,
   `(ln t)^4 ln ln t` law is the one the data follow across all 46 orders of
   magnitude of the chain.
 
+## Citation
+
+Please cite this repository together with Bierton's Zenodo preprints:
+
+* D. Bierton, *A twin-prime propagation conjecture*, [10.5281/zenodo.22017371](https://doi.org/10.5281/zenodo.22017371)
+* D. Bierton, *A twin-gap existence conjecture*, [10.5281/zenodo.22058355](https://doi.org/10.5281/zenodo.22058355)
+* D. Bierton, *Structural reduction of two twin-prime conjectures…*, [10.5281/zenodo.22063097](https://doi.org/10.5281/zenodo.22063097)
+* D. Bierton, *Theorems on twin-prime propagation…*, [10.5281/zenodo.22206095](https://doi.org/10.5281/zenodo.22206095)
+
+A software DOI for this repository is issued from the `v1.0` GitHub release via the Zenodo–GitHub integration (same pattern as the earlier code deposits [10.5281/zenodo.22040224](https://doi.org/10.5281/zenodo.22040224), [10.5281/zenodo.22058546](https://doi.org/10.5281/zenodo.22058546), [10.5281/zenodo.22063114](https://doi.org/10.5281/zenodo.22063114)). See `CITATION.cff`.
+
 ## Licence
 
-CC BY 4.0, matching the original notes.  Please cite this repository
-together with Bierton's Zenodo preprints (DOIs in `REFINED_CONJECTURES.md`).
+CC BY 4.0, matching the original notes.
