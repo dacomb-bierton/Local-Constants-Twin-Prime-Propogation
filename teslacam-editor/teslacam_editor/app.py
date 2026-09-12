@@ -350,6 +350,24 @@ def still(req: StillRequest) -> dict:
     return {"output": out}
 
 
+class RawExportRequest(BaseModel):
+    event_id: str
+    cameras: list[str]
+    output_dir: Optional[str] = None
+
+
+@app.post("/api/export_raw")
+def export_raw(req: RawExportRequest) -> dict:
+    ev = library.get(req.event_id)
+    cams = [c for c in req.cameras if c in ev.cameras] or ev.cameras
+    try:
+        outs = exporter.export_raw(ev, cams, req.output_dir)
+    except ff.FFmpegError as e:
+        raise HTTPException(500, str(e))
+    outputs.update(outs)
+    return {"outputs": outs}
+
+
 @app.get("/api/jobs")
 def list_jobs() -> list[JobStatus]:
     with jobs.lock:

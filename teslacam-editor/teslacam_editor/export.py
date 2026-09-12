@@ -490,6 +490,35 @@ def frame_at(event: EventDetail, camera: str, t: float, out: Path, width: int = 
     return out if out.exists() else None
 
 
+def export_raw(event: EventDetail, cameras: list[str], output_dir: Optional[str] = None) -> list[str]:
+    """Join the original segment files of each camera with stream copy (no re-encoding, no quality loss)."""
+    out_dir = Path(output_dir) if output_dir else default_export_dir()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    work = _workdir()
+    outputs: list[str] = []
+    try:
+        for cam in cameras:
+            files = [seg.files[cam] for seg in event.segments if cam in seg.files]
+            if not files:
+                continue
+            stem = _safe_filename(f"TeslaCam {event.start} {cam}")
+            out = out_dir / f"{stem}.mp4"
+            n = 1
+            while out.exists():
+                out = out_dir / f"{stem} ({n}).mp4"
+                n += 1
+            if len(files) == 1:
+                shutil.copy2(files[0], out)
+            else:
+                lst = work / f"{cam}.txt"
+                lst.write_text("".join(f"file '{Path(f).as_posix()}'\n" for f in files), encoding="utf-8")
+                ff.run_ffmpeg_simple(["-f", "concat", "-safe", "0", "-i", str(lst), "-c", "copy", "-movflags", "+faststart", str(out)])
+            outputs.append(str(out))
+    finally:
+        shutil.rmtree(work, ignore_errors=True)
+    return outputs
+
+
 def cleanup_stale_workdirs(max_age_hours: float = 24) -> None:
     base = cache_dir() / "work"
     if not base.is_dir():

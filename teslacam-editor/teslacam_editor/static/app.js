@@ -865,7 +865,12 @@
   $('#fit-select').addEventListener('change', (e) => { state.view.fit = e.target.value; applyView(); });
   $('#mirror-toggle').addEventListener('change', (e) => { state.view.mirror_rear = e.target.checked; applyView(); });
   $('#speed-select').addEventListener('change', (e) => { state.view.speed = parseFloat(e.target.value); player.setRate(state.view.speed); startCycleTimer(); if (state.selectedItem) { writeViewToItem(); renderSequence(); renderClipEditor(); } });
-  $('#auto-cycle').addEventListener('change', (e) => { state.view.cycle_enabled = e.target.checked; if (player.playing) startCycleTimer(); if (state.selectedItem) { writeViewToItem(); renderSequence(); } });
+  $('#auto-cycle').addEventListener('change', (e) => {
+    state.view.cycle_enabled = e.target.checked;
+    if (player.playing) startCycleTimer();
+    stageToast(e.target.checked ? `Auto-cycle on: main camera changes every ${state.view.cycle_interval} s while playing` : 'Auto-cycle off');
+    if (state.selectedItem) { writeViewToItem(); renderSequence(); }
+  });
   $('#cycle-interval').addEventListener('change', (e) => { state.view.cycle_interval = Math.max(0.5, parseFloat(e.target.value) || 5); if (player.playing) startCycleTimer(); writeViewToItem(); });
   $('#btn-cycle').addEventListener('click', cycleMain);
   $('#ov-timestamp').addEventListener('change', (e) => { state.view.show_timestamp = e.target.checked; applyView(); });
@@ -914,6 +919,17 @@
   $$('#kind-filter button').forEach(b => b.addEventListener('click', () => { $$('#kind-filter button').forEach(x => x.classList.remove('active')); b.classList.add('active'); state.kind = b.dataset.kind; renderLibrary(); }));
   $('#library-search').addEventListener('input', (e) => { state.search = e.target.value; renderLibrary(); });
   $('#btn-reveal-event').addEventListener('click', () => state.event && post('/api/reveal', { path: state.event.folder }).catch(e => toast(e.message, true)));
+  $('#btn-export-raw').addEventListener('click', async () => {
+    if (!state.event) return;
+    const btn = $('#btn-export-raw');
+    btn.disabled = true; btn.textContent = 'Exporting…';
+    try {
+      const r = await post('/api/export_raw', { event_id: state.event.id, cameras: effectiveCameras(), output_dir: $('#export-dir').value.trim() || null });
+      state.lastOutput = r.outputs[0];
+      toast(`${r.outputs.length} file(s) written to ${r.outputs[0].replace(/[\\/][^\\/]*$/, '')}`);
+    } catch (e) { toast(e.message, true); }
+    btn.disabled = false; btn.textContent = 'Export original files';
+  });
   $('#btn-delete-event').addEventListener('click', async () => {
     const ev = state.event; if (!ev) return;
     const ok = await confirmDialog('Delete event from drive', `Permanently delete <b>${ev.title}</b> (${ev.segment_count} min, ${fmtBytes(ev.size_bytes)}) from<br><span class="mono small">${ev.folder}</span>?<br><br>This cannot be undone.`);

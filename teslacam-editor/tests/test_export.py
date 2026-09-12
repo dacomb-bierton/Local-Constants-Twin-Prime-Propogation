@@ -131,6 +131,15 @@ def test_timestamp_overlay_is_drawn_and_advances(library, tmp_path):
     assert f0.crop(region).tobytes() != f2.crop(region).tobytes(), "clock did not advance"
 
 
+def test_export_raw_joins_segments_without_reencoding(library, tmp_path):
+    saved = _by_kind(library, "SavedClips")
+    outs = exporter.export_raw(saved, ["front", "back"], str(tmp_path))
+    assert len(outs) == 2 and all(Path(o).is_file() for o in outs)
+    info = ff.probe(outs[0])
+    assert abs(info.duration - saved.duration) < 0.5
+    assert (info.width, info.height) == (320, 240)  # untouched source resolution
+
+
 def test_export_rejects_empty(library):
     with pytest.raises(ValueError):
         exporter.export_project(Project(), library)
