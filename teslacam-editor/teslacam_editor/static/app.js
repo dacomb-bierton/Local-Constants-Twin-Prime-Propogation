@@ -464,7 +464,7 @@
       el.className = 'clip' + (it.id === state.selectedItem ? ' active' : '') + (state.seq && state.seq.i === idx ? ' playing' : '');
       el.draggable = true;
       el.dataset.id = it.id;
-      const lay = state.config ? state.config.layouts[it.layout] : it.layout;
+      const lay = (state.config ? state.config.layouts[it.layout] : it.layout).split(' (')[0];
       el.innerHTML = `<span class="idx">${idx + 1}</span>
         <img src="/api/events/${it.event_id}/thumb?t=${it.in_point.toFixed(1)}&camera=${it.main_camera}" alt="">
         <div><div class="ttl">${ev ? ev.title.replace(/^\w+ /, '') : 'Missing event'}</div>
