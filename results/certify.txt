@@ -1,0 +1,108 @@
+==============================================================================
+Lemma 1.  Residues: every lower twin p > 3 is 5 (mod 6); D_n = p_n + p_{n+1} + 3 is never a lower twin for n >= 2; C_n = 5 (mod 6).
+==============================================================================
+  [PASS] odd residues r mod 6 with 3 not dividing r or r+2
+         viable = [5]
+  [PASS] all computed lower twins > 3 are 5 (mod 6)
+         2,160 twins checked
+  [PASS] p = q = 2 (mod 3)  =>  D + 2 = 0 (mod 3)
+  [PASS] p = q = 5 (mod 6)  =>  C = 5 (mod 6)
+  [PASS] D-branch successes among computed consecutive pairs: only (3,5)
+         pairs with D in T: [(3, 5)]
+
+==============================================================================
+Lemma 2.  If n > 3 and n, n+6 are both lower twins they are consecutive in T.
+==============================================================================
+  [PASS] n = 2 (mod 3)  =>  n + 4 = 0 (mod 3), so n+2 and n+4 are not lower twins
+
+==============================================================================
+Lemma 3.  For every g = 0 (mod 6) the 6-tuple (n, n+2, n+g, n+g+2, 2n+g+1, 2n+g+3) is admissible; hence S_6(g) > 0 and R(g) > 0.
+==============================================================================
+  [PASS] g = 0 (mod 30): surviving n mod 2, 3, 5 all non-empty
+         survivors: {2: [1], 3: [2], 5: [4]}
+  [PASS] g = 6 (mod 30): surviving n mod 2, 3, 5 all non-empty
+         survivors: {2: [1], 3: [2], 5: [1]}
+  [PASS] g = 12 (mod 30): surviving n mod 2, 3, 5 all non-empty
+         survivors: {2: [1], 3: [2], 5: [2, 4]}
+  [PASS] g = 18 (mod 30): surviving n mod 2, 3, 5 all non-empty
+         survivors: {2: [1], 3: [2], 5: [1, 4]}
+  [PASS] g = 24 (mod 30): surviving n mod 2, 3, 5 all non-empty
+         survivors: {2: [1], 3: [2], 5: [2]}
+  [PASS] q >= 7: six forms forbid at most six residues, so a class survives (pigeonhole)
+  [PASS] for g = 0 (mod 6) the primes 2 and 3 contribute exactly 9 to R(g) = S_6/S_4
+  [PASS] cross-check with is_admissible for g = 6, 12, ..., 600
+  [PASS] g not 0 (mod 6) is impossible for twins > 3 (4-tuple not admissible)
+
+==============================================================================
+Lemma 4.  t = 3 has no productive gap.  (The gap conjecture must start at t = 5.)
+==============================================================================
+  [PASS] 3 + d in T with 3 + d > 3 forces d = 2 (mod 6)
+  [PASS] then 2*3 + d + 1 = d + 7 = 0 (mod 3), and d + 7 > 3
+  [PASS] finite check: no productive d <= 199,998 for t = 3
+  [PASS] t = 5 has the productive gap d = 6 (11, 13, 17, 19 prime; 5 and 7 prime)
+
+==============================================================================
+Lemma 5.  For every t in T with t >= 11 both 5-tuples (d+t, d+t+2, d+2t+1, d+2t+3, d-1) and (..., d+1) are admissible, with nu_2 = 1, nu_3 = 2, nu_5 <= 4.  The thin exceptional set of the original Lemma 5.2 is empty.
+==============================================================================
+  [PASS] t = 11 (mod 30), side d-1: nu_2=1, nu_3=2 (survivor d=[0]), nu_5=4 <= 4
+  [PASS] t = 11 (mod 30), side d+1: nu_2=1, nu_3=2 (survivor d=[0]), nu_5=3 <= 4
+  [PASS] t = 17 (mod 30), side d-1: nu_2=1, nu_3=2 (survivor d=[0]), nu_5=3 <= 4
+  [PASS] t = 17 (mod 30), side d+1: nu_2=1, nu_3=2 (survivor d=[0]), nu_5=4 <= 4
+  [PASS] t = 29 (mod 30), side d-1: nu_2=1, nu_3=2 (survivor d=[0]), nu_5=2 <= 4
+  [PASS] t = 29 (mod 30), side d+1: nu_2=1, nu_3=2 (survivor d=[0]), nu_5=2 <= 4
+  [PASS] q >= 7: five forms forbid at most five residues of d (pigeonhole)
+  [PASS] t = 5 is exceptional: the d-1 tuple has nu_5 = 5 (covering), the d+1 tuple does not
+  [PASS] cross-check with is_admissible on all lower twins 11 <= t <= 100000
+
+==============================================================================
+Lemma 6.  Uniform lower bound for the singular series of the gap 5-tuples: S(t) >= S_min > 0 for every t in T, t >= 11 (replaces 'S(t) >> (log t)^{-O(1)}' in the original Theorem 5.4).
+==============================================================================
+  [PASS] factors at q = 2, 3 and the worst case nu_5 = 4 at q = 5
+         16 * 2.531250 * 0.610352
+  [PASS] log[(1-5/q)(1-1/q)^-5] >= -25/q^2 for every prime 7 <= q <= Q (numerical) and analytically for q >= 10 (Taylor bound)
+  [PASS] tail over q > Q is at least exp(-25/Q) since sum_{q>Q} q^-2 < 1/Q
+  [PASS] S_min = 10.131549  (Q = 1,000,000)
+         prod_(7 <= q <= Q) (1-5/q)(1-1/q)^-5 = 0.409875
+  [PASS] every computed S^-(t), S^+(t) for 11 <= t <= 200000 exceeds S_min (2,158 twins)
+         smallest observed value 10.134581
+
+==============================================================================
+Proposition 7.  Logical relations between the statements.
+==============================================================================
+  [PASS] A (propagation) => infinitely many twins: each success gives C_n in T with C_n > p_n
+  [PASS] B (gap existence for all t >= t0) => infinitely many twins: G(t) = 2t + d + 1 > t
+  [PASS] B does not formally imply A (the original note called B 'strictly stronger'): a productive gap need not be the consecutive gap.  Illustration: d(17) = 24 is productive (41, 59 in T) while the consecutive pair (17, 29) has C = 47 not in T.
+  [PASS] A does not formally imply B: A is an 'infinitely often' statement, B a 'for all large t' statement.
+
+==============================================================================
+Theorem 1.  Explicit local ratio: nu_4, nu_6 by divisibility, R(g) = R_inf rho_5 rho_7 prod_{q>=11, q|Delta(g)} rho_q/gamma_q, and R_min < R(g) for all g.
+==============================================================================
+  [PASS] nu_4(g;q), nu_6(g;q) match the divisibility table for all 6 | g <= 3000, 5 <= q <= 300
+  [PASS] for q >= 5: both extra roots coincide with 4-tuple roots iff q | (g^2-1)(g^2-9), else neither (full residue enumeration, 5 <= q <= 300)
+  [PASS] explicit formula agrees with the direct product over the same primes to 1e-11 for g up to 9,699,690
+         max relative difference 3.09e-14;  R_inf = 5.878239298
+  [PASS] q >= 11: the generic factor gamma_q is the smallest of the four values of rho_q (so every coincidence increases R)
+  [PASS] R_min = R_inf * 25/48 * 49/72 = 2.083577; rho_5 min at g = 0 (5), rho_7 min at g = +-2 (7)
+  [PASS] R(g) > R_min for all 6 | g <= 200000; smallest value found
+         min R(g) = 2.083877 at g = 195540; max R(g) = 42.5105 at g = 194466
+
+==============================================================================
+Theorem 2.  Mean values of S_4(g), S_6(g) over g = 0 (mod 6); Rbar and kappa in closed form.
+==============================================================================
+  [PASS] mean over g mod q of (1 - nu_4/q) is (q-2)^2/q^2 for all 5 <= q <= 200 (enumeration)
+  [PASS] mean over g mod q of (1 - nu_6/q) is (q^2-6q+12)/q^2 for all 5 <= q <= 200 (enumeration)
+  [PASS] q = 2, 3 contribute 8 * 27/16 = 27/2 to the S_4 mean and 32 * 243/64 = 243/2 to the S_6 mean
+  [PASS] (27/2) prod q^2(q-2)^2/(q-1)^4 = 24 C_2^2  (10.459526968 vs 10.459526954)
+  [PASS] Rbar closed form 11.184896 agrees with the enumerated model mean 11.184948 (Q = 20000)
+  [PASS] kappa closed form 14.767683156 = 2 C_2 Rbar = 14.767683147
+  [PASS] partial means to G = 120,000: S_4 10.4560 (limit 10.4595), S_6 116.9696 (limit 116.9887), ratio 11.1868 (limit 11.1849)
+
+==============================================================================
+Theorem 3.  Singular-series identities.
+==============================================================================
+  [PASS] S(n, n+2, 2n+1, 2n+3) = S(n, n+2, n+6, n+8): nu equal at every prime q <= 2000 (for q >= 5 both tuples have 4 distinct roots; nu(2) = 1, nu(3) = 2)
+         values 4.151180749 = 4.151180749
+  [PASS] S_6(6) = 3 * S(n, n+4, n+6, n+10, n+12, n+16): nu equal except nu(7) = 4 vs 6
+         ratio of truncated products 3.000000000
+
+ALL CERTIFICATES PASS.

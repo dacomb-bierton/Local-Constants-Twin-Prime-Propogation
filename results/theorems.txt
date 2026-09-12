@@ -1,0 +1,42 @@
+Closed forms for the local constants of the propagation conjecture
+(Euler products truncated at Q = 10,000,000, analytic tail added)
+
+Theorem 1 (explicit local ratio)
+  R_inf = 9 prod_(q>=11) q^2(q-6)/((q-1)^2(q-4))      = 5.878239267
+  R_min = R_inf * 25/48 * 49/72                        = 2.083577287  (infimum over g)
+  R_inf * 25/16 * 49/36                                = 12.501463719  (largest value with no q>=11 | Delta(g); = R(6))
+
+    g     R(g) explicit    R(g) truncated product   ratio
+        6     12.501463719     12.501463676   1.00000000
+       12     11.251317347     11.251317308   1.00000000
+       18     17.047450526     17.047450467   1.00000000
+       24     15.090002089     15.090002037   1.00000000
+       30      3.424313975      3.424313963   1.00000000
+       36     24.498836160     24.498836075   1.00000000
+       42     11.283463968     11.283463929   1.00000000
+       60      5.203261365      5.203261347   1.00000000
+       90      6.802950785      6.802950761   1.00000000
+      210      4.836746483      4.836746466   1.00000000
+     2310      2.792018604      2.792018595   1.00000000
+    30030      3.226569287      3.226569275   1.00000000
+   510510      3.756530752      3.756530739   1.00000000
+
+Theorem 2 (mean values over gaps g = 0 mod 6)
+  lim (6/G) sum S_4(g) = 24 C_2^2                      = 10.459526955   (24 C_2^2 = 10.459526954)
+  lim (6/G) sum S_6(g) = 24 C_2^2 Rbar                 = 116.988726205
+  Rbar = 9 prod_(q>=5) q^2(q^2-6q+12)/((q-1)^2(q-2)^2)  = 11.184896478
+  kappa = 2 C_2 Rbar                                    = 14.767683139   (2 C_2 Rbar = 14.767683138)
+
+  finite-height mean of R(g_n) predicted by the Hardy-Littlewood gap model
+       x        E[R]      mean gap
+     1e+06    11.44789       154.2
+     1e+08    11.36612       268.2
+     1e+09    11.33974       337.1
+     1e+12    11.29013       591.7
+     1e+20    11.23772      1623.2
+     1e+50    11.19911     10063.0
+  (observed to 10^8: 11.3480 ; to 10^9: 11.3467)
+
+Theorem 3 (identities)
+  S(n,n+2,2n+1,2n+3) = S(n,n+2,n+6,n+8): nu agrees at all q <= 1000: True; values 4.151180855 vs 4.151180855
+  S_6(6) = 3 S(n,n+4,n+6,n+10,n+12,n+16): nu agrees except at 7 ((4, 6)): True; ratio 3.000000000

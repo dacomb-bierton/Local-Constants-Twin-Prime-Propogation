@@ -1,0 +1,2 @@
+150 rows: proving 602 large primes and 300 side numbers with gp, 3 processes
+proved prime: 602/602   side condition holds: 150/150   structural errors: 0   (0.3s)

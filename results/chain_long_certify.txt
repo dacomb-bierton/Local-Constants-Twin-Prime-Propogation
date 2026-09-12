@@ -1,0 +1,4 @@
+using /usr/bin/gp
+1134 rows: proving 4538 large primes and 2268 side numbers with gp, 3 processes
+proved prime: 4538/4538   side condition holds: 1134/1134   structural errors: 0   (666.2s)
+ECPP certificates for the final C (344 digits) and C+2: valid=True, written to results/chain_long_final.cert and results/chain_long_final.cert.p2 (2.2s)

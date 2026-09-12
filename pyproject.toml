@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "twinconj"
+version = "0.1.0"
+description = "Refined, quantitative versions of the Bierton twin-prime conjectures, with reproducible computations and machine-checked lemmas."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "CC-BY-4.0" }
+dependencies = ["numpy>=1.24"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+fast = ["gmpy2>=2.1"]
+
+[project.scripts]
+twinconj = "twinconj.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["twinconj*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

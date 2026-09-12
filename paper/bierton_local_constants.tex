@@ -1,0 +1,791 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Tset}{\mathcal{T}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Rbar}{\overline{R}}
+\newcommand{\Rinf}{R_{\infty}}
+\newcommand{\Rmin}{R_{\min}}
+\DeclareMathOperator{\Sing}{\mathfrak S}
+
+\title{\textbf{Local constants of the twin-prime propagation map:\\
+explicit formulas, mean values, and an unconditional upper bound}}
+\author{Dacomb Bierton\\[4pt]
+{\normalsize ORCID: 0009-0007-7507-1398}}
+\date{September 2026 --- draft}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Tset$ be the set of lower twin primes and, for consecutive $p_n<p_{n+1}$
+in $\Tset$, let $C_n=p_n+p_{n+1}+1$.  The pair \emph{propagates} if
+$C_n\in\Tset$.  The Hardy--Littlewood prediction for the number of
+propagating pairs involves, for each gap $g=p_{n+1}-p_n$, the ratio
+$R(g)=\Sing_6(g)/\Sing_4(g)$ of the singular series of the six linear forms
+$n,\,n+2,\,n+g,\,n+g+2,\,2n+g+1,\,2n+g+3$ to that of the first four.
+We prove: (i)~an explicit formula for $R(g)$ as a universal constant
+$\Rinf=5.878239\ldots$ times a finite product over the primes dividing
+$g(g^2-1)(g^2-4)(g^2-9)$, with the sharp bounds
+$\Rmin=2.083577\ldots<R(g)\ll(\log\log g)^2$; (ii)~the mean values
+$\frac6G\sum_{g\le G,\,6\mid g}\Sing_4(g)\to 24C_2^2$ and
+$\frac6G\sum_{g\le G,\,6\mid g}\Sing_6(g)\to 24C_2^2\,\Rbar$ with
+\[
+\Rbar \;=\; 9\prod_{q\ge 5}\frac{q^2(q^2-6q+12)}{(q-1)^2(q-2)^2}
+\;=\;11.184896\ldots,
+\]
+which identifies the constant $\kappa=2C_2\Rbar=14.767683\ldots$ in the
+quantitative propagation conjecture $N(X)\sim\kappa\int_2^X
+dt/\bigl((\log t)^2(\log 2t)^2\bigr)$; (iii)~the unconditional bound
+$N(X)\ll X/(\log X)^3$ for the number of propagating pairs with
+$p_{n+1}\le X$, one logarithm short of the conjectured order; and (iv)~two
+exact identities between singular series: bi-twin chains
+$(n,n+2,2n+1,2n+3)$ have the same singular series as prime quadruplets, and
+the gap-$6$ propagating configuration has exactly three times the singular
+series of a prime sextuplet.  All finite computations are machine-checked
+and the numerical predictions are compared with data to $10^{10}$, with $14{,}000$ random twins of up to $150$ digits, and with a proved orbit of the map $t\mapsto2t+d(t)+1$ reaching several hundred digits.
+Nothing here proves the twin-prime conjecture; the results are about the
+constants of the conjecture and an upper bound in the direction of it.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction and statement of results}
+
+Let $\Tset=\{3,5,11,17,29,41,59,71,101,\dots\}$ be the set of primes $p$
+with $p+2$ prime, enumerated as $p_1<p_2<\cdots$.  In~\cite{BiertonProp}
+the author introduced the map $(p_n,p_{n+1})\mapsto C_n:=p_n+p_{n+1}+1$
+and conjectured that $C_n\in\Tset$ for infinitely many~$n$
+(the \emph{Twin-Prime Propagation Conjecture}); the companion branch
+$D_n=C_n+2$ is empty for $n\ge2$~\cite{BiertonThm}.  Write
+\[
+N(X):=\#\{n\ge1:\ p_{n+1}\le X,\ C_n\in\Tset\}.
+\]
+Both $p_n$ and $C_n$ are lower twins, so the natural
+quantitative version of the conjecture is a Hardy--Littlewood type
+asymptotic for $N(X)$.  The purpose of this note is to determine the
+constants in that asymptotic exactly, and to prove what can be proved
+unconditionally about $N(X)$.
+
+\subsection*{Notation}
+For a tuple of linear forms $f_i(n)=a_in+b_i$ ($1\le i\le k$) let
+$\nu(q)$ be the number of residues $n\bmod q$ with
+$q\mid f_1(n)\cdots f_k(n)$, and let
+\begin{equation}\label{eq:sing}
+\Sing(f_1,\dots,f_k)=\prod_{q}\Bigl(1-\frac{\nu(q)}q\Bigr)\Bigl(1-\frac1q\Bigr)^{-k}
+\end{equation}
+be the singular series (the product over primes $q$ converges absolutely
+when no form is a constant multiple of another).  The Bateman--Horn
+heuristic~\cite{BH} predicts
+$\#\{n\le X: \text{all } f_i(n)\text{ prime}\}\sim
+\Sing\cdot\int_2^X dt/\prod_i\log f_i(t)$.
+We write $C_2=\prod_{q\ge3}q(q-2)/(q-1)^2=0.6601618\ldots$ for the twin
+prime constant, so that $\Sing(n,n+2)=2C_2$.
+
+For an even $g$ put
+\begin{align*}
+\Sing_4(g)&:=\Sing(n,\,n+2,\,n+g,\,n+g+2),\\
+\Sing_6(g)&:=\Sing(n,\,n+2,\,n+g,\,n+g+2,\,2n+g+1,\,2n+g+3),\qquad
+R(g):=\Sing_6(g)/\Sing_4(g).
+\end{align*}
+Simultaneous primality of the six forms at $n$ says exactly that
+$n,n+g\in\Tset$ and $2n+g+1=C(n,n+g)\in\Tset$.  Both series vanish unless
+$6\mid g$ (Lemma~\ref{lem:res}), and for $6\mid g$ the primes $2,3$
+contribute the factor $4\cdot\frac94=9$ to $R(g)$ (Lemma~\ref{lem:23}).
+Finally let
+\[
+\Delta(g):=g\,(g^2-1)(g^2-4)(g^2-9)=(g-3)(g-2)(g-1)\,g\,(g+1)(g+2)(g+3).
+\]
+
+\subsection*{Results}
+
+\begin{theorem}[Explicit local ratio]\label{thm:explicit}
+Let $6\mid g$, $g\ge6$.  For every prime $q\ge5$,
+\[
+\nu_4(g;q)=\begin{cases}2,& q\mid g,\\ 3,& q\mid g^2-4,\\ 4,&\text{otherwise},\end{cases}
+\qquad
+\nu_6(g;q)=\begin{cases}\nu_4(g;q),& q\mid (g^2-1)(g^2-9),\\ \nu_4(g;q)+2,&\text{otherwise},\end{cases}
+\]
+where $\nu_4,\nu_6$ are the root counts of the four- and six-form tuples.
+Put $\rho_q(g)=q^2(q-\nu_6)/\bigl((q-1)^2(q-\nu_4)\bigr)$ and
+$\gamma_q=q^2(q-6)/\bigl((q-1)^2(q-4)\bigr)$.  Then
+\begin{equation}\label{eq:explicit}
+R(g)\;=\;\Rinf\;\rho_5(g)\,\rho_7(g)\prod_{\substack{q\ge 11\\ q\mid\Delta(g)}}\frac{\rho_q(g)}{\gamma_q},
+\qquad
+\Rinf:=9\prod_{q\ge11}\gamma_q=5.87823926\ldots
+\end{equation}
+In particular $R(g)$ is $\Rinf$ times a finite product determined by
+$g\bmod 5$, $g\bmod 7$ and the prime factors $\ge11$ of $\Delta(g)$.
+\end{theorem}
+
+\begin{corollary}[Sharp bounds]\label{cor:bounds}
+For every $g\equiv0\pmod 6$,
+\[
+\Rmin:=\Rinf\cdot\frac{25}{48}\cdot\frac{49}{72}=2.08357729\ldots\;<\;R(g)\;\ll\;(\log\log g)^2 .
+\]
+The constant $\Rmin$ is the infimum of $R(g)$ (approached along
+$g\equiv0\pmod5$, $g\equiv\pm2\pmod7$ with all prime factors of $\Delta(g)$
+at least $11$ large), and the upper bound is sharp up to the implied
+constant: $R(g)\gg(\log\log g)^2$ along $g\equiv 1\pmod q$ for all
+$11\le q\le y$, $g\le 6\prod_{q\le y}q$.
+\end{corollary}
+
+\begin{theorem}[Mean values over gaps]\label{thm:mean}
+As $G\to\infty$,
+\begin{align}
+\frac6G\sum_{\substack{g\le G\\ 6\mid g}}\Sing_4(g)&\;\longrightarrow\;
+\frac{27}{2}\prod_{q\ge5}\frac{q^2(q-2)^2}{(q-1)^4}\;=\;24C_2^2\;=\;10.4595269\ldots,\label{eq:mean4}\\
+\frac6G\sum_{\substack{g\le G\\ 6\mid g}}\Sing_6(g)&\;\longrightarrow\;
+\frac{243}{2}\prod_{q\ge5}\frac{q^4(q^2-6q+12)}{(q-1)^6}\;=\;24C_2^2\,\Rbar\;=\;116.988726\ldots,\label{eq:mean6}
+\end{align}
+where
+\begin{equation}\label{eq:Rbar}
+\Rbar\;=\;9\prod_{q\ge5}\frac{q^2(q^2-6q+12)}{(q-1)^2(q-2)^2}\;=\;11.18489648\ldots
+\end{equation}
+Consequently the $\Sing_4$-weighted mean of $R(g)$ over gaps tends to
+$\Rbar$, and
+\begin{equation}\label{eq:kappa}
+\kappa:=2C_2\,\Rbar=\frac{27}{2}\prod_{q\ge5}\frac{q^3(q^2-6q+12)}{(q-1)^4(q-2)}=14.76768314\ldots
+\end{equation}
+\end{theorem}
+
+The constant $\kappa$ is the one that appears in the quantitative form of
+the propagation conjecture (Section~\ref{sec:conj}):
+\begin{conjecture}[Quantitative propagation]\label{conj:A}
+As $X\to\infty$,
+\[
+N(X)\sim\sum_{p_{n+1}\le X}\frac{R(p_{n+1}-p_n)}{\log C_n\,\log(C_n+2)}
+\sim\kappa\int_2^X\frac{dt}{(\log t)^2(\log 2t)^2}.
+\]
+\end{conjecture}
+\noindent
+Both forms are compared with the data in Section~\ref{sec:data}: to $10^{10}$
+the first predicts $612{,}777$ propagating pairs against $615{,}447$
+observed (ratio $1.0044$).  The convergence of the mean of $R(g_n)$ to
+$\Rbar$ is slow (the Hardy--Littlewood gap model predicts $11.32$ at height
+$10^{10}$; the observed mean is $11.330$), which is why the second form
+should be used only asymptotically.
+
+\begin{theorem}[Unconditional upper bound]\label{thm:upper}
+$N(X)\ll X/(\log X)^3$.
+\end{theorem}
+\noindent
+The trivial bound is $N(X)\le\#(\Tset\cap[1,X])\ll X/(\log X)^2$ (the
+map $n\mapsto C_n$ is injective and $C_n<2X$).  The conjectured order is
+$X/(\log X)^4$.
+
+\begin{theorem}[Identities]\label{thm:identities}
+\begin{enumerate}
+\item[(a)] $\Sing(n,\,n+2,\,2n+1,\,2n+3)=\Sing(n,\,n+2,\,n+6,\,n+8)=4.15118\ldots$:
+bi-twin chains of length two are locally exactly as likely as prime
+quadruplets.
+\item[(b)] $\Sing_6(6)=3\,\Sing(n,\,n+4,\,n+6,\,n+10,\,n+12,\,n+16)=51.8958\ldots$:
+a propagating consecutive pair at gap $6$ is locally exactly three times as
+likely as a prime sextuplet.
+\end{enumerate}
+\end{theorem}
+
+\begin{proposition}[Exceptional origins]\label{prop:exceptional}
+Call an even $d$ \emph{productive} for $t\in\Tset$ if $t+d\in\Tset$ and
+$2t+d+1\in\Tset$~\cite{BiertonGap}.  The tuple
+$(d+t,\,d+t+2,\,d+2t+1,\,d+2t+3)$ in the variable $d$ has a fixed prime
+divisor if and only if $t=3$; in particular $t=3$ has no productive gap and
+every other $t\in\Tset$ has an admissible gap tuple.  If the side condition
+``$d-1$ prime'' of~\cite{BiertonGap} is added, the resulting five-form
+tuple has a fixed prime divisor exactly for $t\in\{3,5\}$, and for $t=5$ the
+only productive $d$ with $d-1$ prime is $d=6$; with the side condition
+``$d+1$ prime'' the exceptional set is $\{3\}$.
+\end{proposition}
+
+\begin{remark}[What is and is not new]
+Theorems~\ref{thm:explicit}--\ref{thm:identities} are statements about
+Euler products and residue classes; their proofs are elementary and
+complete.  Theorem~\ref{thm:upper} is a routine application of the Selberg
+sieve in the form of Halberstam--Richert~\cite[Thm.~5.7]{HR} combined with
+Theorem~\ref{thm:mean}; the statement is new because the propagation map
+is new, the technique is not.  None of this touches the parity barrier, and
+none of it implies the twin-prime conjecture.  The method of
+Theorems~\ref{thm:explicit} and~\ref{thm:mean} (root coincidences governed
+by cross differences, and averaging of singular series over a shift
+parameter) goes back to Hardy--Littlewood and Gallagher~\cite{Gallagher};
+the specific tuples, constants and identities do not appear in the
+literature as far as the author has been able to determine.
+\end{remark}
+
+\section{Residues}
+
+\begin{lemma}\label{lem:res}
+If $p\in\Tset$, $p>3$, then $p\equiv5\pmod6$.  If $p<p'$ are in $\Tset$,
+both $>3$, then $6\mid p'-p$.  For $g\not\equiv0\pmod6$ the four forms
+$n,n+2,n+g,n+g+2$ have a fixed divisor $2$ or $3$, so
+$\Sing_4(g)=\Sing_6(g)=0$.
+\end{lemma}
+\begin{proof}
+$p\equiv1\pmod 6$ forces $3\mid p+2>3$; $p\equiv 3\pmod 6$ forces $3\mid p>3$;
+even $p$ is not prime.  The difference of two residues $5\bmod6$ is
+$0\bmod6$.  For odd $g$ one of $n,n+g$ is even; for
+$g\equiv\pm2\pmod6$ the residues $0,-2,-g,-g-2$ cover $\Z/3$.
+\end{proof}
+
+\begin{lemma}\label{lem:23}
+Let $6\mid g$.  Then $\nu_4(g;2)=\nu_6(g;2)=1$ and $\nu_4(g;3)=\nu_6(g;3)=2$.
+Hence the factors at $q=2,3$ of $\Sing_4(g)$, $\Sing_6(g)$ and $R(g)$ are
+$8,\ \tfrac{27}{16},\ \tfrac{27}2$ and $32,\ \tfrac{243}{64},\ \tfrac{243}2$
+and $4,\ \tfrac94,\ 9$ respectively.
+\end{lemma}
+\begin{proof}
+Modulo $2$: $n$ odd makes all six forms odd (since $g$ is even), so the
+only root is $n\equiv0$.  Modulo $3$: with $g\equiv0$ the roots of the four
+forms are $0$ and $1$, and the two extra forms $2n+1,2n+3\equiv 2n+1, 2n$
+vanish at $n\equiv1$ and $n\equiv0$, adding nothing.  The factors are
+$(1-\frac12)2^k=2^{k-1}$ and $(1-\frac23)(\frac32)^k=\frac13(\frac32)^k$
+for $k=4,6$.
+\end{proof}
+
+\section{The explicit local ratio}
+
+\begin{lemma}[Root coincidences]\label{lem:roots}
+Let $6\mid g$ and $q\ge5$ prime.  Modulo $q$ the four forms
+$n,n+2,n+g,n+g+2$ have roots $0,-2,-g,-g-2$, and the two extra forms
+$2n+g+1,\,2n+g+3$ have roots $r_1=-\tfrac{g+1}2$, $r_2=-\tfrac{g+3}2$.
+\begin{enumerate}
+\item[(i)] Among $0,-2,-g,-g-2$ there are two coincidences if $q\mid g$,
+one if $q\mid g\pm2$, none otherwise; these cases are exclusive.
+\item[(ii)] $r_1\neq r_2$.  Moreover
+$r_1\in\{0,-2,-g,-g-2\}$ iff $q\mid(g^2-1)(g^2-9)$, and the same holds for
+$r_2$ (with the roles of $g\pm1$ and $g\pm3$ interchanged).  Thus either
+both extra roots are new or both are old.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(i) $0\equiv-g$ or $-2\equiv-g-2$ iff $q\mid g$; $0\equiv-g-2$ iff
+$q\mid g+2$; $-2\equiv-g$ iff $q\mid g-2$; $0\not\equiv-2$.  A prime
+$q\ge5$ divides at most one of $g-2,g,g+2$.
+
+(ii) $r_1\equiv r_2$ iff $q\mid 2$.  Solving $-\frac{g+1}2\equiv a$ for
+$a\in\{0,-2,-g,-g-2\}$ gives $q\mid g+1,\ g-3,\ g-1,\ g+3$ respectively;
+solving $-\frac{g+3}2\equiv a$ gives $q\mid g+3,\ g-1,\ g-3,\ g+1$.  Both
+lists are the divisibility of $q$ into one of $g\pm1,g\pm3$, i.e.\ into
+$(g^2-1)(g^2-9)$.  Since $q\ge5$ divides at most one of the four numbers
+$g-3,g-1,g+1,g+3$ (their differences are $2,4,6$), the coincidences of $r_1$
+and $r_2$ are with two distinct old roots.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:explicit}]
+The formulas for $\nu_4$ and $\nu_6$ are Lemma~\ref{lem:roots}.  By
+Lemma~\ref{lem:23} and the definition~\eqref{eq:sing},
+\[
+R(g)=9\prod_{q\ge5}\frac{(1-\nu_6/q)(1-1/q)^{-6}}{(1-\nu_4/q)(1-1/q)^{-4}}
+=9\prod_{q\ge5}\frac{q^2(q-\nu_6)}{(q-1)^2(q-\nu_4)}=9\prod_{q\ge5}\rho_q(g).
+\]
+For $q\ge11$ with $q\nmid\Delta(g)$ we have $(\nu_4,\nu_6)=(4,6)$ and
+$\rho_q(g)=\gamma_q$; $\gamma_q=1-9q^{-2}+O(q^{-3})$, so
+$\prod_{q\ge11}\gamma_q$ converges and~\eqref{eq:explicit} follows on
+dividing out.  (For $q\in\{5,7\}$ the generic case never occurs, since
+$g-3,\dots,g+3$ are seven consecutive integers.)
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:bounds}]
+For fixed $q\ge11$ the four possible values of $\rho_q$ are
+\[
+\gamma_q=\frac{q^2(q-6)}{(q-1)^2(q-4)},\qquad
+\frac{q^2(q-4)}{(q-1)^2(q-2)}\ \ (q\mid g),
+\]
+\[
+\frac{q^2(q-5)}{(q-1)^2(q-3)}\ \ (q\mid g^2-4),\qquad
+\frac{q^2}{(q-1)^2}\ \ (q\mid(g^2-1)(g^2-9)),
+\]
+and $\gamma_q$ is the smallest: $(q-4)^2>(q-2)(q-6)$ and
+$(q-5)(q-4)>(q-6)(q-3)$.  Hence every factor in~\eqref{eq:explicit} beyond
+$\Rinf\rho_5\rho_7$ is $>1$, and $R(g)\ge\Rinf\min\rho_5\min\rho_7$ with
+equality only when no prime $\ge11$ divides $\Delta(g)$.  Enumerating
+$g\bmod5$: $\rho_5=\frac{25}{48}$ for $g\equiv0$ and $\frac{25}{16}$
+otherwise; $g\bmod7$: $\rho_7=\frac{49}{60},\frac{49}{36},\frac{49}{72}$
+for $g\equiv0,\pm1\text{ or }\pm3,\pm2$.  So $R(g)\ge\Rmin$.  Equality
+would need $g\equiv0\pmod5$ and every prime factor of $\Delta(g)$ below
+$11$; by Sylvester--Schur (a product of $7$ consecutive integers all
+$>7$ has a prime factor $>7$) this forces $g\le10$, and $g=6$ has
+$g\equiv1\pmod 5$.  So $R(g)>\Rmin$ for all $g$, while choosing $g\equiv0\pmod5$,
+$g\equiv\pm2\pmod7$ with all prime factors of $\Delta(g)$ above $11$ large
+gives $R(g)\to\Rmin$.
+
+Upper bound: $\rho_q/\gamma_q\le\frac{q^2}{(q-1)^2}\big/\gamma_q=\frac{q-4}{q-6}=1+\frac2{q-6}$,
+so $\log R(g)\le\log(\Rinf\rho_5\rho_7)+\sum_{q\mid\Delta(g),\,q\ge11}\frac{2}{q-6}$.
+The sum has $\omega(\Delta(g))\le\log\Delta(g)/\log 11\ll\log g$ terms and
+is largest when the primes are the smallest possible, i.e.\ at most
+$\sum_{11\le q\le y}\frac2{q-6}$ with $\pi(y)\ll\log g$, so
+$y\ll\log g\log\log g$ and the sum is $2\log\log y+O(1)\le 2\log\log\log g+O(1)$.
+Hence $R(g)\ll(\log\log g)^2$.  Conversely, for $y\ge11$ choose by the
+Chinese remainder theorem $g\equiv0\pmod6$ with $g\equiv1\pmod q$ for every
+prime $11\le q\le y$ and $0<g\le6\prod_{q\le y}q=e^{(1+o(1))y}$.  Then every
+such $q$ divides $g-1\mid\Delta(g)$ with $\rho_q/\gamma_q=1+\frac2{q-6}$,
+so $R(g)\ge\Rinf\rho_5\rho_7\prod_{11\le q\le y}(1+\frac2{q-6})\gg(\log y)^2\gg(\log\log g)^2$.
+\end{proof}
+
+\section{Mean values}
+
+Throughout this section $k\in\{4,6\}$, $\Sing_k(g)$ is as above and, for a
+prime $q\ge5$,
+\[
+f_q(g):=\Bigl(1-\frac{\nu_k(g;q)}q\Bigr)\Bigl(1-\frac1q\Bigr)^{-k},\qquad u_q(g):=f_q(g)-1,
+\]
+so that $\Sing_k(g)=c_k\prod_{q\ge5}f_q(g)$ with $c_4=\frac{27}2$, $c_6=\frac{243}2$
+(Lemma~\ref{lem:23}).  Note that $f_q(g)$ depends only on $g\bmod q$.
+
+\begin{lemma}[Local means]\label{lem:localmean}
+For every prime $q\ge5$,
+\[
+\frac1q\sum_{a=0}^{q-1}\Bigl(1-\frac{\nu_4(a;q)}q\Bigr)=\frac{(q-2)^2}{q^2},
+\qquad
+\frac1q\sum_{a=0}^{q-1}\Bigl(1-\frac{\nu_6(a;q)}q\Bigr)=\frac{q^2-6q+12}{q^2}.
+\]
+\end{lemma}
+\begin{proof}
+By Lemma~\ref{lem:roots}, $\sum_a(q-\nu_4(a;q))=(q-2)+2(q-3)+(q-3)(q-4)=(q-2)^2$
+(one class with $q\mid a$, two with $q\mid a\pm2$, $q-3$ generic).  For
+$\nu_6$: the class $a\equiv0$ contributes $q-4$, the classes $a\equiv\pm2$
+contribute $2(q-5)$, the four classes $a\equiv\pm1,\pm3$ contribute
+$4(q-4)$, and the remaining $q-7$ classes contribute $(q-7)(q-6)$; the total
+is $q^2-6q+12$.  This decomposition assumes the seven classes
+$0,\pm1,\pm2,\pm3$ are distinct, i.e.\ $q\ge7$; for $q=7$ there are then no
+generic classes and the total is $3+4+12=19=49-42+12$.  For $q=5$ the
+classes $\pm2$ coincide with $\mp3$ and have $(\nu_4,\nu_6)=(3,3)$, so the
+five classes contribute $1+2\cdot2+2\cdot1=7=25-30+12$.  (Both identities
+are also verified by enumeration for $5\le q\le 200$ in the accompanying
+code.)
+\end{proof}
+
+\begin{lemma}[Size of the local deviations]\label{lem:size}
+There is an absolute constant $C$ (one may take $C=11$) such that
+$|u_q(g)|\le C/q$ for all $q\ge5$, $k\in\{4,6\}$ and all $g$.  If moreover
+$q\nmid\Delta(g)$ and $q\ge11$ then $|\log f_q(g)|\le 2k^2/q^2$.
+\end{lemma}
+\begin{proof}
+Write $u_q=\bigl[(1-\nu/q)-(1-1/q)^k\bigr]/(1-1/q)^k$.  For $q\ge7$ the
+binomial expansion of $(1-1/q)^k$ is alternating with decreasing terms
+(consecutive terms have ratio $\frac{k-j}{(j+1)q}\le k/q<1$), so
+$1-k/q\le(1-1/q)^k\le1-k/q+k(k-1)/(2q^2)$ and, since $2\le\nu\le k$, the
+numerator lies in $[-k(k-1)/(2q^2),\,(k-\nu)/q]$, of absolute value at most
+$4/q$; the denominator is at least $(6/7)^6>0.39$.  The finitely many cases
+$q=5$ are checked directly (the largest deviation is $0.53<11/5$).  For the
+generic factor,
+\[
+-\log f_q=-\log(1-k/q)+k\log(1-1/q)=\sum_{j\ge2}\frac{k^j-k}{j\,q^j}
+\in\Bigl[0,\ \frac{k^2}{2q^2}\cdot\frac1{1-k/q}\Bigr],
+\]
+and $1/(1-k/q)\le 11/5$ for $q\ge11$, $k\le6$.
+\end{proof}
+
+\begin{lemma}[Averaging a periodic function along multiples of $6$]\label{lem:periodic}
+Let $d$ be coprime to $6$, let $u:\Z\to\mathbb R$ be $d$-periodic with
+$|u|\le B$ and mean $\bar u=\frac1d\sum_{a=0}^{d-1}u(a)$.  Then for every
+$M\ge1$, $\bigl|\sum_{m=1}^{M}u(6m)-M\bar u\bigr|\le 2dB$.  If
+$d=q_1\cdots q_r$ is a product of distinct primes and
+$u(g)=\prod_i u_{q_i}(g)$ with $u_{q_i}$ $q_i$-periodic, then
+$\bar u=\prod_i\bar u_{q_i}$.
+\end{lemma}
+\begin{proof}
+Since $6$ is invertible modulo $d$, $m\mapsto6m$ permutes the residues
+modulo $d$, so the sum of $u(6m)$ over any $d$ consecutive $m$ equals
+$d\bar u$.  Split $[1,M]$ into $\lfloor M/d\rfloor$ full blocks and a
+remainder of fewer than $d$ terms.  The second statement is the Chinese
+remainder theorem: $\Z/d\cong\prod\Z/q_i$ and the mean of a product of
+functions of the separate coordinates is the product of the means.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:mean}]
+Fix $k\in\{4,6\}$, let $G$ be large, $M=\lfloor G/6\rfloor$ and
+$Q=\lfloor\log G\rfloor$.  Put $P=\prod_{5\le q\le Q}q$ and
+\[
+\Sing_k^{(Q)}(g)=c_k\prod_{5\le q\le Q}f_q(g)=c_k\prod_{5\le q\le Q}\bigl(1+u_q(g)\bigr)=c_k\sum_{d\mid P}u_d(g),
+\qquad u_d(g):=\prod_{q\mid d}u_q(g).
+\]
+
+\emph{Truncation.}  For $6\mid g\le G$,
+$\Sing_k(g)/\Sing_k^{(Q)}(g)=\prod_{q>Q}f_q(g)$.  By Lemma~\ref{lem:size}
+the primes $q>Q$ not dividing $\Delta(g)$ contribute
+$\exp\bigl(O(\sum_{q>Q}q^{-2})\bigr)=1+O(1/Q)$.  The primes $q>Q$ dividing
+$\Delta(g)$ number at most $\log|\Delta(g)|/\log Q\le 7\log(G+3)/\log Q$,
+and each contributes a factor $1+O(1/q)=1+O(1/Q)$.  Hence, uniformly in
+$g\le G$,
+\begin{equation}\label{eq:trunc}
+\Sing_k(g)=\Sing_k^{(Q)}(g)\Bigl(1+O\Bigl(\frac{\log G}{Q\log Q}\Bigr)\Bigr)
+=\Sing_k^{(Q)}(g)\Bigl(1+O\Bigl(\frac1{\log\log G}\Bigr)\Bigr).
+\end{equation}
+
+\emph{Averaging.}  Each $u_d$ is $d$-periodic with $|u_d|\le\prod_{q\mid d}C/q=:B_d$
+(Lemma~\ref{lem:size}), and $\gcd(d,6)=1$.  By Lemma~\ref{lem:periodic},
+\[
+\sum_{m=1}^{M}\Sing_k^{(Q)}(6m)=c_k\sum_{d\mid P}\Bigl(M\prod_{q\mid d}\bar u_q+O(dB_d)\Bigr)
+=c_kM\prod_{5\le q\le Q}(1+\bar u_q)+O\Bigl(c_k\prod_{5\le q\le Q}(1+C)\Bigr),
+\]
+because $\sum_{d\mid P}dB_d=\prod_{q\le Q}(1+q\cdot C/q)$.  The error is
+$(1+C)^{\pi(Q)}\le(1+C)^{2\log G/\log\log G}=G^{o(1)}=o(M)$.
+
+\emph{Local means.}  By Lemma~\ref{lem:localmean},
+$1+\bar u_q=\frac{(q-2)^2}{q^2}\bigl(1-\frac1q\bigr)^{-4}=\frac{q^2(q-2)^2}{(q-1)^4}$
+for $k=4$ and
+$1+\bar u_q=\frac{q^2-6q+12}{q^2}\bigl(1-\frac1q\bigr)^{-6}=\frac{q^4(q^2-6q+12)}{(q-1)^6}$
+for $k=6$; in both cases $\bar u_q=O(q^{-2})$, so
+$\prod_{q\ge5}(1+\bar u_q)$ converges and
+$\prod_{5\le q\le Q}(1+\bar u_q)=\prod_{q\ge5}(1+\bar u_q)\,(1+O(1/Q))$.
+
+Combining the three steps,
+\[
+\frac1M\sum_{m\le M}\Sing_k(6m)=c_k\prod_{q\ge5}(1+\bar u_q)\Bigl(1+O\Bigl(\frac1{\log\log G}\Bigr)\Bigr),
+\]
+which is~\eqref{eq:mean4} and~\eqref{eq:mean6} with the stated Euler
+products.  Finally $\prod_{q\ge5}\frac{q(q-2)}{(q-1)^2}=\frac{C_2}{3/4}=\frac{4C_2}3$
+gives $\frac{27}2\cdot\frac{16C_2^2}9=24C_2^2$; dividing~\eqref{eq:mean6}
+by~\eqref{eq:mean4} gives~\eqref{eq:Rbar}, and $2C_2\Rbar$ with
+$2C_2=\frac32\prod_{q\ge5}\frac{q(q-2)}{(q-1)^2}$ gives~\eqref{eq:kappa}.
+\end{proof}
+
+\begin{remark}
+The error term $O(1/\log\log G)$ is what the crude truncation gives; the
+partial means converge much faster in practice (relative error about
+$40/G$ at $G\in[6\cdot10^4,1.2\cdot10^5]$).  A Ramanujan-sum
+expansion in the style of Montgomery--Soundararajan would give a power
+saving, but is not needed here.
+\end{remark}
+
+\section{The constant of the propagation conjecture}\label{sec:conj}
+
+For a consecutive pair $(p_n,p_{n+1})$ with gap $g$, simultaneous
+membership $p_n,p_{n+1},C_n\in\Tset$ is primality of the six forms at
+$n=p_n$.  The Bateman--Horn heuristic for the six forms, divided by that
+for the four forms (which describe the event ``$p_n$ and $p_n+g$ are lower
+twins'' that we condition on), gives the conditional probability
+$R(g)/\bigl(\log C_n\log(C_n+2)\bigr)$ that the pair propagates.  Summing
+over pairs gives the first form of Conjecture~\ref{conj:A}.  (Being
+consecutive is an additional condition on the pair; heuristically it is
+independent of the primality of $C_n,C_n+2$, which live near $2p_n$, and it
+is imposed in both numerator and denominator of the conditional
+probability.)
+
+For the second form one needs the average of $R(g_n)$ over consecutive
+pairs.  In the Hardy--Littlewood model the gap $g$ following a lower twin
+near height $x$ has probability proportional to
+$\Sing_4(g)\,e^{-\lambda g}$ with $\lambda=2C_2/(\log x)^2$ the density of
+$\Tset$ (the factor $\Sing_4(g)$ is the local correlation of the two twins,
+the exponential is the probability of no twin in between).  Since
+$\lambda\to0$, the average over $g$ of $R(g)$ against this weight tends,
+by Theorem~\ref{thm:mean} and partial summation, to the $\Sing_4$-weighted
+mean $\Rbar$.  Together with $\#(\Tset\cap[1,x])\sim2C_2x/(\log x)^2$ and
+$\log C_n\sim\log 2p_n$ this gives $N(X)\sim2C_2\Rbar\int dt/((\log t)^2(\log2t)^2)$,
+i.e.\ $\kappa=2C_2\Rbar$.
+
+The finite-height average
+\[
+\Rbar(x):=\frac{\sum_{6\mid g}\Sing_6(g)e^{-\lambda g}}{\sum_{6\mid g}\Sing_4(g)e^{-\lambda g}},
+\qquad\lambda=\frac{2C_2}{(\log x)^2},
+\]
+converges to $\Rbar$ only like the partial means of Theorem~\ref{thm:mean}
+at $G\approx1/\lambda$.  Table~\ref{tab:Rx} lists it; the observed mean of
+$R(g_n)$ over all consecutive pairs with $p_n\le10^{10}$ is $11.3297$
+($11.3467$ to $10^9$), and over the dyadic blocks $[2^{28},2^{29})$ and
+$[2^{33},2^{34})$ it is $11.335$ and $11.320$, in agreement with the model
+at those heights and drifting in the predicted direction.
+
+\begin{table}[h]\centering
+\begin{tabular}{@{}rrr@{}}\toprule
+$x$ & $\Rbar(x)$ & mean gap $1/\lambda$-weighted\\ \midrule
+$10^{6}$ & $11.448$ & $154$\\
+$10^{8}$ & $11.366$ & $268$\\
+$10^{9}$ & $11.340$ & $337$\\
+$10^{10}$ & $11.319$ & $414$\\
+$10^{12}$ & $11.290$ & $592$\\
+$10^{20}$ & $11.238$ & $1623$\\
+$10^{50}$ & $11.201$ & $\approx10^4$\\
+$\infty$ & $11.18490$ & \\ \bottomrule
+\end{tabular}
+\caption{Model mean of $R(g_n)$ at height $x$ and its limit $\Rbar$.}\label{tab:Rx}
+\end{table}
+
+\section{The unconditional upper bound}
+
+We use the Selberg upper-bound sieve in the following form.
+
+\begin{theorem}[Halberstam--Richert {\cite[Thm.~5.7]{HR}}]\label{thm:HR}
+Let $F_i(n)=a_in+b_i$ ($1\le i\le k$) be linear forms with integer
+coefficients, $a_i\ge1$, such that
+$E:=\prod_ia_i\prod_{r<s}(a_rb_s-a_sb_r)\neq0$, and let $\rho(q)$ be the
+number of roots of $\prod_iF_i$ modulo $q$.  Suppose $\rho(q)<q$ for all
+primes $q$.  Then for $1<y\le z$,
+\[
+\#\{z-y<n\le z:\ F_1(n),\dots,F_k(n)\text{ all prime}\}
+\le 2^kk!\,\prod_q\Bigl(1-\frac{\rho(q)}q\Bigr)\Bigl(1-\frac1q\Bigr)^{-k}\frac{y}{(\log y)^k}
+\bigl(1+O(\varepsilon)\bigr),
+\]
+where $\varepsilon=(\log\log3y+\log\log3|E|)/\log y$ and the implied
+constant depends only on $k$.
+\end{theorem}
+
+\begin{lemma}\label{lem:adm6}
+For every $g\equiv0\pmod6$ the six forms $n,n+2,n+g,n+g+2,2n+g+1,2n+g+3$
+satisfy $\nu_6(g;q)<q$ for every prime $q$.
+\end{lemma}
+\begin{proof}
+$\nu_6=1<2$ and $\nu_6=2<3$ by Lemma~\ref{lem:23}; for $q\ge5$,
+$\nu_6\le\nu_4+2\le6$, which is $<q$ for $q\ge7$.  For $q=5$ use
+Lemma~\ref{lem:roots}: $5$ divides exactly one of $g-2,g-1,g,g+1,g+2$.
+If $5\mid g\pm1$ then $\nu_6=\nu_4\le4$.  If $5\mid g\pm2$ then also
+$5\mid g\mp3$ (as $g+2\equiv g-3$), so again $\nu_6=\nu_4=3$.  If $5\mid g$
+then $\nu_4=2$ and $\nu_6\le4$.  In every case $\nu_6(g;5)\le4<5$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:upper}]
+Let $X$ be large and $G=\lfloor(\log X)^3\rfloor$.  Every $n$ counted by
+$N(X)$ has $p_{n+1}\le X$; write $g_n=p_{n+1}-p_n$.
+
+\emph{Large gaps.}  The gaps $g_n$ with $p_{n+1}\le X$ are disjoint
+intervals inside $[3,X]$, so $\sum_{p_{n+1}\le X}g_n\le X$ and
+\[
+\#\{n:\ p_{n+1}\le X,\ g_n>G\}\le X/G\ll X/(\log X)^3 .
+\]
+
+\emph{Small gaps.}  Fix $g\le G$ with $6\mid g$ (other $g$ do not occur by
+Lemma~\ref{lem:res}, apart from the single pair $(3,5)$).  If $g_n=g$ and
+the pair propagates, then $n':=p_n\le X$ makes the six forms
+$n',n'+2,n'+g,n'+g+2,2n'+g+1,2n'+g+3$ simultaneously prime.  Apply
+Theorem~\ref{thm:HR} with $k=6$, $y=z=X$: the hypothesis $\rho(q)<q$ is
+Lemma~\ref{lem:adm6}; the coefficients are $a_i\in\{1,2\}$ and
+$|b_i|\le g+3$, so $|E|\le2^6(2(g+3))^{15}\le(\log X)^{60}$ and
+$\log\log3|E|\ll\log\log\log X$.  Hence
+\[
+\#\{n:\ p_{n+1}\le X,\ g_n=g,\ C_n\in\Tset\}\ll\Sing_6(g)\frac{X}{(\log X)^6},
+\]
+uniformly in $g\le G$.  Summing over $6\mid g\le G$ and using
+Theorem~\ref{thm:mean} (which gives $\sum_{6\mid g\le G}\Sing_6(g)\ll G$),
+\[
+\#\{n:\ p_{n+1}\le X,\ g_n\le G,\ C_n\in\Tset\}\ll\frac{X}{(\log X)^6}\sum_{\substack{g\le G\\6\mid g}}\Sing_6(g)
+\ll\frac{GX}{(\log X)^6}\ll\frac{X}{(\log X)^3}.
+\]
+Adding the two parts proves the theorem.
+\end{proof}
+
+\begin{remark}
+The loss of one logarithm against the conjectured $X/(\log X)^4$ comes
+entirely from the trivial treatment of large gaps: one would need
+$\#\{p_n\le X:\ g_n>(\log X)^{3}\}\ll X/(\log X)^{4}$, a statement about
+twin primes in short intervals that is not available.  Any improvement of
+the large-gap count improves Theorem~\ref{thm:upper} correspondingly.
+\end{remark}
+
+\section{Identities and exceptional origins}
+
+\begin{proof}[Proof of Theorem~\ref{thm:identities}]
+(a) For the bi-twin tuple $n,n+2,2n+1,2n+3$ the roots modulo $q\ge5$ are
+$0,-2,-\frac12,-\frac32$; their pairwise differences are
+$2,\frac12,\frac32,\frac32,\frac12,1$ (up to sign), none of which vanishes
+modulo $q\ge5$, so $\nu(q)=4$.  For the quadruplet $n,n+2,n+6,n+8$ the
+roots $0,-2,-6,-8$ have differences $2,6,8,4,6,2$, again nonzero modulo
+$q\ge5$, so $\nu(q)=4$.  Modulo $2$ both tuples have $\nu=1$; modulo $3$
+both have $\nu=2$ (roots $0,1$ in each case).  The Euler products
+coincide factor by factor.
+
+(b) The propagation tuple with $g=6$ has, by Theorem~\ref{thm:explicit},
+$\nu_6(6;5)=4$ (as $5\mid g-1$), $\nu_6(6;7)=4$ (as $7\mid g+1$), and
+$\nu_6(6;q)=6$ for $q\ge11$ because $\Delta(6)=2^{6}\cdot3^{4}\cdot5\cdot7$
+has no prime factor $\ge11$; and $\nu=1,2$ at $q=2,3$.  The sextuplet
+$n,n+4,n+6,n+10,n+12,n+16$ has roots $0,-4,-6,-10,-12,-16$; modulo $5$
+these are $\{0,1,4,0,3,4\}$, four classes; modulo $7$ they are
+$\{0,3,1,4,2,5\}$, six classes; the pairwise differences
+$4,6,10,12,16,2,6,8,12,4,6,10,2,6,4$ are not divisible by any prime
+$\ge11$, so $\nu=6$ for $q\ge11$; and $\nu=1,2$ at $q=2,3$.  The two
+root-count profiles agree except at $q=7$, where the local factors are
+$(1-\frac47)(\frac67)^{-6}$ and $(1-\frac67)(\frac67)^{-6}$, whose ratio is
+$3$.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:exceptional}]
+Modulo $2$ all four forms $d+t,d+t+2,d+2t+1,d+2t+3$ are odd for even $d$.
+Modulo $3$, for $t\equiv2$ (every $t\in\Tset$, $t>3$) the roots in $d$ are
+$-t\equiv1$, $-t-2\equiv2$, $-2t-1\equiv1$, $-2t-3\equiv2$, so $d\equiv0$
+survives; for $t=3$ the roots are $0,1,2,0$, covering $\Z/3$.  For $q\ge5$
+there are at most four roots.  Hence the tuple has a fixed divisor iff
+$t=3$; and for $t=3$ any $d$ with $3+d\in\Tset$ has $d\equiv2\pmod6$, so
+$2\cdot3+d+1\equiv0\pmod 3$ and exceeds $3$: no productive gap exists.
+
+With the fifth form $d-1$: modulo $5$ and $t=5$ the roots are
+$0,3,4,2,1$, all of $\Z/5$, so exactly one of $d+5,d+7,d+11,d+13,d-1$ is
+divisible by $5$ for every $d$; primality forces that one to equal $5$,
+which happens only for $d-1=5$, i.e.\ $d=6$ (and indeed
+$11,13,17,19$ are prime).  For $t\in\Tset$, $t\ge11$, one has
+$t\bmod30\in\{11,17,29\}$ and a direct enumeration gives $\nu_5\le4$ in
+all three cases and for both side conditions; modulo $3$ the fifth form
+$d\mp1\equiv\mp1$ adds no root at $d\equiv0$; for $q\ge7$ there are at most
+five roots.  With the form $d+1$ and $t=5$ the roots modulo $5$ are
+$0,3,4,2,4$, so the tuple is admissible.  This gives the exceptional sets
+$\{3,5\}$ and $\{3\}$.
+\end{proof}
+
+\section{Numerical verification}\label{sec:data}
+
+All constants were evaluated as Euler products truncated at
+$Q=10^8$ with the analytic tail $\sum_{q>Q}q^{-2}\approx(1-1/\log Q)/(Q\log Q)$
+added; changing $Q$ from $10^7$ to $10^8$ moves the values by less than
+$2\cdot10^{-9}$.  As a check, the product form of $24C_2^2$ in~\eqref{eq:mean4}
+agrees with the value computed from the known digits of $C_2$ to
+$10^{-10}$.
+
+\begin{center}
+\begin{tabular}{@{}lr@{}}\toprule
+$\Rinf=9\prod_{q\ge11}\gamma_q$ & $5.87823926$\\
+$\Rmin=\Rinf\cdot\frac{25}{48}\cdot\frac{49}{72}$ & $2.08357729$\\
+$R(6)=\Rinf\cdot\frac{25}{16}\cdot\frac{49}{36}$ & $12.5014637$\\
+$24C_2^2$ & $10.4595270$\\
+$\Rbar$ & $11.1848965$\\
+$24C_2^2\Rbar$ & $116.988726$\\
+$\kappa=2C_2\Rbar$ & $14.7676831$\\
+$\Sing(\text{bi-twin})=\Sing(\text{quadruplet})$ & $4.15118075$\\
+$\Sing_6(6)=3\Sing(\text{sextuplet})$ & $51.8958333$\\ \bottomrule
+\end{tabular}
+\end{center}
+
+Theorem~\ref{thm:explicit} was checked against the direct product over
+the same primes for $g$ up to $9{,}699{,}690$ (relative difference $<10^{-12}$),
+and the root-count table against enumeration for all $6\mid g\le3000$,
+$5\le q\le300$.  The minimum of $R(g)$ over $6\mid g\le2\cdot10^5$ is
+$2.083876$ at $g=195{,}540$ (so $R(g)>\Rmin$ with the infimum approached),
+and the maximum is $42.51$ at $g=194{,}466$.  Lemma~\ref{lem:localmean}
+was checked by enumeration for $5\le q\le200$, and the partial means of
+Theorem~\ref{thm:mean} to $G=1.2\cdot10^5$ are $10.4560$ and $116.970$
+against the limits $10.4595$ and $116.989$.
+
+\subsection*{The propagation conjecture to $10^{10}$}
+
+Among the $27{,}412{,}679$ lower twins up to $10^{10}$ there are
+$615{,}447$ propagating consecutive pairs; the first form of
+Conjecture~\ref{conj:A} predicts $612{,}777.0$ (ratio $1.0044$) and the
+$\kappa$-integral $612{,}694.8$ (ratio $1.0045$).  The per-dyadic-block
+ratios are within $\pm1.7\%$ from $2^{22}$ on and within $\pm0.7\%$ from
+$2^{28}$ on.  The only pair with $D_n\in\Tset$ is $(3,5)$, as
+in~\cite{BiertonThm}.  Restricting to gap $6$: there
+are $180{,}529$ consecutive pairs at gap $6$ with $p_n\le10^{10}$ (prime
+quadruplets) against the Hardy--Littlewood prediction $181{,}065.1$, and
+$4{,}527$ of them propagate against the Bateman--Horn prediction
+$\Sing_6(6)\int_2^{10^{10}}dt/\bigl((\log t)^2(\log(t+6))^2(\log(2t+7))^2\bigr)=4{,}540.6$
+for the six forms (ratio $0.997$), with $\Sing_6(6)=3\,\Sing(\text{sextuplet})$
+from Theorem~\ref{thm:identities}.  Per gap, the ratios observed/predicted
+for the twenty most frequent gaps $g\le120$ lie between $0.945$ and $1.036$.
+
+\subsection*{The minimal productive gap}
+
+For $t\in\Tset$, $t\ge5$, let $d(t)$ be the least $d\equiv0\pmod6$ that is
+productive for $t$ in the sense of~\cite{BiertonGap} (i.e.\ $t+d\in\Tset$,
+$2t+d+1\in\Tset$, and $d-1$ or $d+1$ prime).  The note~\cite{BiertonGap}
+conjectures that $d(t)$ exists for every $t\ge5$; the Bateman--Horn
+heuristic for the five-form tuple in the variable $d$, with the fixed
+divisors of Proposition~\ref{prop:exceptional} removed, gives an expected
+number $E_t(Y)$ of productive gaps $\le Y$ of order $Y/(\log t)^4$, and the
+Poisson model $\Pr(d(t)>Y)=e^{-E_t(Y)}$ then predicts
+$d(t)\asymp(\log t)^4\log\log t$ on average and
+$d(t)\le(\log t)^5\log\log t$ for every $t\ge5$ (the refined form of the
+conjecture used in the repository).  Three independent data sets test this.
+
+\emph{Exhaustive range.}  Every one of the $27{,}412{,}678$ lower twins
+$5\le t\le10^{10}$ has a productive gap; the largest is
+$d(9{,}432{,}106{,}511)=1{,}728{,}906$, and the largest value of
+$d(t)/((\log t)^5\log\log t)$ is $0.144$, at $t=324{,}301{,}421$.  The mean
+of $d(t)/((\log t)^4\log\log t)$ is $0.0573$ or $0.0574$ in every dyadic
+block from $[2^{26},2^{27})$ to $[2^{33},2^{34})$, and the model mean
+$\sum_Y e^{-E_t(Y)}$ matches the observed block means to within $10\%$
+throughout and to $0.1\%$ in the last block.  The side condition is met by
+$d-1$ alone for $43.3\%$ of the twins, by $d+1$ alone for $42.9\%$, and by
+both for $13.8\%$.
+
+\emph{Independent samples at large height.}  For each of the sizes
+$20,30,40,60,80,100,150$ decimal digits, $2{,}000$ lower twins were drawn
+uniformly at random (random start in the decade, forward scan) and $d(t)$
+was computed exactly by sieving the candidates $d=6m$ with all primes up to
+$10^5$ before testing survivors.  Under the Poisson model the values
+$u=e^{-E_t(d(t))}$ are uniform on $(0,1)$.  Over the $14{,}000$ samples the
+mean of $u$ is $0.5033$ and the Kolmogorov--Smirnov distance to the uniform
+distribution is $0.0086$, against a $5\%$ critical value of $0.0115$; the
+seven per-size distances are $0.018,0.039,0.023,0.019,0.028,0.017,0.020$
+(critical value $0.030$), and the ratios
+$\sum d(t)/\sum\mathbb E[d(t)]$ lie between $0.954$ and $1.022$.  The
+normalised mean $d(t)/((\log t)^4\log\log t)$ is $0.056$--$0.061$ at every
+size, the same value as in the exhaustive range.
+
+\emph{The constructive orbit.}  Iterating $t\mapsto2t+d(t)+1$ from $t=5$
+produces a single orbit through $\Tset$ (the ``twin-gap chain''
+of~\cite{BiertonGap}).  It was followed for 1{,}134 steps, to a $t$ of
+343 decimal digits.  Every prime along it ($t$, $t+2$, $t+d$,
+$t+d+2$ at each step, and the final pair) was proved prime with the APR--CL
+test of PARI/GP, and ECPP certificates for the final pair are distributed
+with the repository, so the orbit does not rest on probable-prime tests.
+Along the orbit the values $u=e^{-E_t(d(t))}$ have mean 0.516 and
+Kolmogorov--Smirnov distance 0.038 to the uniform distribution ($5\%$
+critical value 0.040); the largest value of
+$d(t)/((\log t)^5\log\log t)$ is $0.556$, attained at the first step $t=5$,
+and it is below 0.005 for every $t>10^{12}$.  The orbit therefore
+behaves, as far as $d(t)$ is concerned, like a sequence of independent
+twins of the same sizes, across some 340 orders of magnitude.
+
+All checks are reproduced in the accompanying repository%
+\footnote{\url{https://github.com/dacomb-bierton/Local-Constants-Twin-Prime-Propogation}} by the commands
+\texttt{certify}, \texttt{theorems}, \texttt{propagation} and \texttt{gaps}
+of the \texttt{twinconj} package and by the scripts \texttt{extend\_chain},
+\texttt{sample\_gaps} and \texttt{certify\_chain}; the two exhaustive runs
+to $10^{10}$ need about $40$\,GB of memory.
+
+\section{Status}
+
+\begin{center}
+\begin{tabular}{@{}p{0.58\textwidth}p{0.36\textwidth}@{}}\toprule
+\textbf{Claim} & \textbf{Status}\\ \midrule
+Explicit formula and sharp bounds for $R(g)$ & Theorem~\ref{thm:explicit}, Corollary~\ref{cor:bounds}: proved.\\
+Mean values of $\Sing_4,\Sing_6$ over gaps; closed forms for $\Rbar$, $\kappa$ & Theorem~\ref{thm:mean}: proved.\\
+$N(X)\ll X/(\log X)^3$ & Theorem~\ref{thm:upper}: proved (Selberg sieve).\\
+Bi-twin $=$ quadruplet, $\Sing_6(6)=3\,\Sing(\text{sextuplet})$ & Theorem~\ref{thm:identities}: proved.\\
+Exceptional origins $\{3\}$, $\{3,5\}$ & Proposition~\ref{prop:exceptional}: proved.\\
+$N(X)\to\infty$ (propagation conjecture) & Open; follows from Hypothesis~H~\cite{BiertonThm}.\\
+$N(X)\sim\kappa\int dt/((\log t)^2(\log2t)^2)$ & Conjecture~\ref{conj:A}; consistent with data to $10^{10}$ (ratio $1.0044$).\\
+Twin-prime conjecture & Open; not addressed by anything here.\\ \bottomrule
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{99}
+\bibitem{BH} P.~T. Bateman and R.~A. Horn, A heuristic asymptotic formula
+concerning the distribution of prime numbers, \textit{Math.\ Comp.} 16
+(1962), 363--367.
+\bibitem{BiertonProp} D.~Bierton, A twin-prime propagation conjecture,
+Zenodo, August 2026, \url{https://doi.org/10.5281/zenodo.22017371}.
+\bibitem{BiertonGap} D.~Bierton, A twin-gap existence conjecture, Zenodo,
+August 2026, \url{https://doi.org/10.5281/zenodo.22058355}.
+\bibitem{BiertonH} D.~Bierton, Structural reduction of two twin-prime
+conjectures and conditional resolution under Hypothesis~H, Zenodo, August
+2026, \url{https://doi.org/10.5281/zenodo.22063097}.
+\bibitem{BiertonThm} D.~Bierton, Theorems on twin-prime propagation and a
+redefinition of two conjectures, Zenodo, 31 August 2026,
+\url{https://doi.org/10.5281/zenodo.22206095}.
+\bibitem{Gallagher} P.~X. Gallagher, On the distribution of primes in
+short intervals, \textit{Mathematika} 23 (1976), 4--9.
+\bibitem{HR} H.~Halberstam and H.-E. Richert, \textit{Sieve Methods},
+Academic Press, London, 1974.
+\bibitem{HL} G.~H. Hardy and J.~E. Littlewood, Some problems of `Partitio
+Numerorum'. III, \textit{Acta Math.} 44 (1923), 1--70.
+\bibitem{MS} H.~L. Montgomery and K.~Soundararajan, Primes in short
+intervals, \textit{Comm.\ Math.\ Phys.} 252 (2004), 589--617.
+\bibitem{OEIS} OEIS Foundation Inc., Sequence A066388 (bi-twin chains),
+\url{https://oeis.org/A066388}.
+\end{thebibliography}
+
+\end{document}
