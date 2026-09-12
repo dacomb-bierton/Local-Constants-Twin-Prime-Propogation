@@ -185,7 +185,7 @@ Please cite this repository together with Bierton's Zenodo preprints:
 * D. Bierton, *Structural reduction of two twin-prime conjectures…*, [10.5281/zenodo.22063097](https://doi.org/10.5281/zenodo.22063097)
 * D. Bierton, *Theorems on twin-prime propagation…*, [10.5281/zenodo.22206095](https://doi.org/10.5281/zenodo.22206095)
 
-A software DOI for this repository is issued from the `v1.0` GitHub release via the Zenodo–GitHub integration (same pattern as the earlier code deposits [10.5281/zenodo.22040224](https://doi.org/10.5281/zenodo.22040224), [10.5281/zenodo.22058546](https://doi.org/10.5281/zenodo.22058546), [10.5281/zenodo.22063114](https://doi.org/10.5281/zenodo.22063114)). See `CITATION.cff`.
+A GitHub release `v1.0` is published so Zenodo can archive this repository the same way as the earlier code deposits ([10.5281/zenodo.22040224](https://doi.org/10.5281/zenodo.22040224), [10.5281/zenodo.22058546](https://doi.org/10.5281/zenodo.22058546), [10.5281/zenodo.22063114](https://doi.org/10.5281/zenodo.22063114)). Once this repository is enabled at [Zenodo’s GitHub settings](https://zenodo.org/account/settings/github/) and archived, the software DOI will be added here and in `CITATION.cff`.
 
 ## Licence
 
